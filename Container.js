@@ -59,6 +59,7 @@ Container.prototype = {
     },
 
     getDependencyNames: function (targetFunction) {
+        // based on http://stackoverflow.com/a/9924463/1551204
         var fnStr = targetFunction.toString().replace(STRIP_COMMENTS, "");
         var result = fnStr.slice(fnStr.indexOf("(") + 1, fnStr.indexOf(")")).match(ARGUMENT_NAMES);
         return result || [];
