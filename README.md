@@ -1,7 +1,7 @@
 # yaioc: Yet Another IOC-Container for Node.js
 
 [![Build Status](https://travis-ci.org/bschaepper/yaioc.svg?branch=master)](https://travis-ci.org/bschaepper/yaioc)
-
+[![Coverage Status](https://coveralls.io/repos/bschaepper/yaioc/badge.png)](https://coveralls.io/r/bschaepper/yaioc)
 
 
 ## Installation
