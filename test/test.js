@@ -114,14 +114,27 @@ describe("yaioc test", function () {
     describe("child containers", function () {
 
         it("should optionally take a container in constructor, which is used for dependency resolving", function () {
-            var childContainer = yaioc.container();
-            var superContainer = yaioc.container(childContainer);
-            var thing = {};
-            childContainer.register("thing", thing);
+            var wrappedContainer = yaioc.container();
+            var container = yaioc.container(wrappedContainer);
 
-            var resolvedThing = superContainer.get("thing");
+            var foo = {};
+            wrappedContainer.register("foo", foo);
 
-            expect(resolvedThing === thing).to.be.eql(true);
+            var resolvedFoo = container.get("foo");
+
+            expect(resolvedFoo === foo).to.be.eql(true);
+        });
+
+        it("should not resolve dependencies in outer container", function () {
+            var wrappedContainer = yaioc.container();
+            var container = yaioc.container(wrappedContainer);
+
+            var foo = {};
+            container.register("foo", foo);
+
+            var resolvedFoo = wrappedContainer.get("foo");
+
+            expect(resolvedFoo).to.be.eql(void 0);
         });
 
     });
