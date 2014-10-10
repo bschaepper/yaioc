@@ -2,7 +2,7 @@
   "name": "yaioc",
   "version": "0.0.0",
   "description": "Yet Another IOC-Container for Node.js",
-  "main": "index.js",
+  "main": "yaioc.js",
   "scripts": {
     "test": "grunt test"
   },
