@@ -1,5 +1,6 @@
-# Coverage directory used by tools like istanbul
+# Reports (Istanbul and Plato)
 coverage
+reports
 
 # Dependency directories
 node_modules

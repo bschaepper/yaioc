@@ -111,4 +111,19 @@ describe("yaioc test", function () {
 
     });
 
+    describe("child containers", function () {
+
+        it("should optionally take a container in constructor, which is used for dependency resolving", function () {
+            var childContainer = yaioc.container();
+            var superContainer = yaioc.container(childContainer);
+            var thing = {};
+            childContainer.register("thing", thing);
+
+            var resolvedThing = superContainer.get("thing");
+
+            expect(resolvedThing === thing).to.be.eql(true);
+        });
+
+    });
+
 });

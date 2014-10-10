@@ -5,8 +5,9 @@ var changeCase = require("change-case");
 var STRIP_COMMENTS = /((\/\/.*$)|(\/\*[\s\S]*?\*\/))/mg;
 var ARGUMENT_NAMES = /([^\s,]+)/g;
 
-function Container() {
+function Container(childContainer) {
     this.dependencies = {};
+    this.childContainer = childContainer;
 }
 
 Container.prototype = {
@@ -25,7 +26,7 @@ Container.prototype = {
     },
 
     get: function (name) {
-        var dependency = this.dependencies[name];
+        var dependency = this.resolve(name);
 
         if (this.isConstructor(dependency, name)) {
             return this.createInstance(dependency);
@@ -34,6 +35,10 @@ Container.prototype = {
         } else {
             return dependency;
         }
+    },
+
+    resolve: function (name) {
+        return this.dependencies[name] || this.childContainer && this.childContainer.resolve(name);
     },
 
     holdsConstructorFor: function (name) {

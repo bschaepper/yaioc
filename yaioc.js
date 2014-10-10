@@ -14,8 +14,8 @@ function yaioc() {
 
 yaioc.Container = Container;
 
-yaioc.container = function () {
-    return new Container();
+yaioc.container = function (childContainer) {
+    return new Container(childContainer);
 };
 
 module.exports = yaioc;
