@@ -28,3 +28,12 @@ yaioc is available via npm: `npm install yaioc`
     assert(bar instanceof Bar);
     assert(bar.foo instanceof Foo);
     assert(bar.value === "static value");
+
+
+## Goals
+
+* Small
+* Unobtrusive, invisible to managed components
+* Easy to use
+* Pluggable/embeddable by design
+* No meta-data or scripting required
