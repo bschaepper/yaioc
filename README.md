@@ -1,16 +1,14 @@
-# yaioc
+# yaioc: Yet Another IOC-Container for Node.js
 
 [![Build Status](https://travis-ci.org/bschaepper/yaioc.svg?branch=master)](https://travis-ci.org/bschaepper/yaioc)
 
-=====
 
-Yet Another IOC-Container for Node.js
 
-## Installation ##
+## Installation
 
 yaioc is available via npm: `npm install yaioc`
 
-## Usage ##
+## Usage
 
     function Foo() {
     }
