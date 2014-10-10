@@ -3,6 +3,10 @@ yaioc
 
 Yet Another IOC-Container for Node.js
 
+## Installation ##
+
+yaioc is available via npm: `npm install yaioc`
+
 ## Usage ##
 
     function Foo() {
