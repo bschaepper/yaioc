@@ -1,6 +1,7 @@
+# yaioc
+
 [![Build Status](https://travis-ci.org/bschaepper/yaioc.svg?branch=master)](https://travis-ci.org/bschaepper/yaioc)
 
-yaioc
 =====
 
 Yet Another IOC-Container for Node.js
