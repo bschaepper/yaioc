@@ -137,6 +137,17 @@ describe("yaioc test", function () {
             expect(resolvedFoo).to.be.eql(void 0);
         });
 
+        it("should resolve constructors in wrapped container", function () {
+            var wrappedContainer = yaioc.container();
+            var container = yaioc.container(wrappedContainer);
+
+            wrappedContainer.register(TargetFunction);
+
+            var targetFunction = container.get("targetFunction");
+
+            expect(targetFunction).to.be.a.instanceof(TargetFunction);
+        });
+
     });
 
 });
