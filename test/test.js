@@ -38,6 +38,23 @@ describe("yaioc test", function () {
             expect(instance).to.be.instanceof(TargetFunction);
         });
 
+        it("should throw if dependency cannot be resolved" /*
+
+         resolveDependencies: function (constructorFunction, name) {
+         var dependencies = this.getDependencyNames(constructorFunction);
+         return dependencies.map(function (dependencyName) {
+         var dependency = this.get(dependencyName);
+
+         if (!dependency) {
+         throw new Error("Could not satisfy dependency '" + dependencyName + "' required by '" + name + "'");
+         }
+
+         return dependency;
+         }, this);
+         },
+
+        */);
+
     });
 
     describe("get", function () {
