@@ -67,13 +67,17 @@ Container.prototype = {
         var dependencyNames = this.getDependencyNames(constructorFunction);
         var dependencies = dependencyNames.map(this.get, this);
 
-        dependencies.forEach(function (dependency, index) {
-            if (!dependency) {
-                throw new Error("Could not satisfy dependency '" + dependencyNames[index] + "' required by '" + name + "'");
-            }
-        }, this);
+        dependencies.forEach(this.checkDependency.bind(this, dependencyNames, name));
 
         return dependencies;
+    },
+
+    checkDependency: function (dependencyNames, name, dependency, index) {
+        if (dependency) {
+            return;
+        }
+
+        throw new Error("Could not satisfy dependency '" + dependencyNames[index] + "' required by '" + name + "'");
     },
 
     getDependencyNames: function (targetFunction) {
