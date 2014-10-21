@@ -39,22 +39,14 @@ describe("yaioc test", function () {
         });
 
 
-        it("should throw if dependency cannot be resolved" /*
+        it("should throw if dependency cannot be resolved", function () {
+            var container = yaioc.container();
+            container.register(TargetFunction);
 
-         resolveDependencies: function (constructorFunction, name) {
-         var dependencies = this.getDependencyNames(constructorFunction);
-         return dependencies.map(function (dependencyName) {
-         var dependency = this.get(dependencyName);
+            var action = container.get.bind(container, "targetFunction");
 
-         if (!dependency) {
-         throw new Error("Could not satisfy dependency '" + dependencyName + "' required by '" + name + "'");
-         }
-
-         return dependency;
-         }, this);
-         },
-
-        */);
+            expect(action).to.throw(/Could not satisfy dependency/);
+        });
 
         it("should resolve types which end in upper case", function () {
             function TypeAB() { TargetFunction.call(this); }
@@ -167,8 +159,9 @@ describe("yaioc test", function () {
         it("should resolve constructors in wrapped container", function () {
             var wrappedContainer = yaioc.container();
             var container = yaioc.container(wrappedContainer);
-
             wrappedContainer.register(TargetFunction);
+            wrappedContainer.register("dependencyOne", {});
+            wrappedContainer.register("dependencyTwo", {});
 
             var targetFunction = container.get("targetFunction");
 

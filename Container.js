@@ -63,9 +63,17 @@ Container.prototype = {
         return instance;
     },
 
-    resolveDependencies: function (constructorFunction) {
-        var dependencies = this.getDependencyNames(constructorFunction);
-        return dependencies.map(this.get, this);
+    resolveDependencies: function (constructorFunction, name) {
+        var dependencyNames = this.getDependencyNames(constructorFunction);
+        var dependencies = dependencyNames.map(this.get, this);
+
+        dependencies.forEach(function (dependency, index) {
+            if (!dependency) {
+                throw new Error("Could not satisfy dependency '" + dependencyNames[index] + "' required by '" + name + "'");
+            }
+        }, this);
+
+        return dependencies;
     },
 
     getDependencyNames: function (targetFunction) {
