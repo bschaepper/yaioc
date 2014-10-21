@@ -1,9 +1,8 @@
 "use strict";
 
-var changeCase = require("change-case");
-
 var STRIP_COMMENTS = /((\/\/.*$)|(\/\*[\s\S]*?\*\/))/mg;
 var ARGUMENT_NAMES = /([^\s,]+)/g;
+var IS_PASCAL_CASE = /^[A-Z][a-zA-Z]*$/;
 
 function Container(wrappedContainer) {
     this.dependencies = {};
@@ -36,7 +35,7 @@ Container.prototype = {
     },
 
     resolveConstructor: function (name) {
-        return (this.holdsConstructorFor(name) && this.get(changeCase.pascalCase(name)));
+        return (this.holdsConstructorFor(name) && this.get(this.toPascalCase(name)));
     },
 
     resolveInWrappedContainer: function (name) {
@@ -44,11 +43,15 @@ Container.prototype = {
     },
 
     holdsConstructorFor: function (name) {
-        return changeCase.pascalCase(name) in this.dependencies;
+        return this.toPascalCase(name) in this.dependencies;
+    },
+
+    toPascalCase: function (name) {
+        return name[0].toUpperCase() + name.substring(1);
     },
 
     isConstructor: function (functionToInspect, name) {
-        return typeof functionToInspect === "function" && changeCase.isUpperCase(name[0]);
+        return typeof functionToInspect === "function" && IS_PASCAL_CASE.test(name);
     },
 
     createInstance: function (constructorFunction) {
