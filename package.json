@@ -1,6 +1,6 @@
 {
   "name": "yaioc",
-  "version": "0.0.1",
+  "version": "0.0.3",
   "description": "Yet Another IOC-Container for Node.js",
   "main": "yaioc.js",
   "scripts": {
@@ -34,8 +34,5 @@
     "mocha": "^1.20.1",
     "sinon": "^1.10.2",
     "sinon-chai": "~2.5.0"
-  },
-  "dependencies": {
-    "change-case": "~2.1.5"
   }
 }

@@ -1,13 +1,12 @@
 "use strict";
 
-var changeCase = require("change-case");
-
 var STRIP_COMMENTS = /((\/\/.*$)|(\/\*[\s\S]*?\*\/))/mg;
 var ARGUMENT_NAMES = /([^\s,]+)/g;
+var IS_PASCAL_CASE = /^[A-Z][a-zA-Z]*$/;
 
-function Container(childContainer) {
+function Container(wrappedContainer) {
     this.dependencies = {};
-    this.childContainer = childContainer;
+    this.wrappedContainer = wrappedContainer;
 }
 
 Container.prototype = {
@@ -28,25 +27,31 @@ Container.prototype = {
     get: function (name) {
         var dependency = this.resolve(name);
 
-        if (this.isConstructor(dependency, name)) {
-            return this.createInstance(dependency);
-        } else if (!dependency && this.holdsConstructorFor(name)) {
-            return this.get(changeCase.pascalCase(name));
-        } else {
-            return dependency;
-        }
+        return this.isConstructor(dependency, name) ? this.createInstance(dependency) : dependency;
     },
 
     resolve: function (name) {
-        return this.dependencies[name] || this.childContainer && this.childContainer.resolve(name);
+        return this.dependencies[name] || this.resolveConstructor(name) || this.resolveInWrappedContainer(name);
+    },
+
+    resolveConstructor: function (name) {
+        return (this.holdsConstructorFor(name) && this.get(this.toPascalCase(name)));
+    },
+
+    resolveInWrappedContainer: function (name) {
+        return this.wrappedContainer && this.wrappedContainer.resolve(name);
     },
 
     holdsConstructorFor: function (name) {
-        return changeCase.pascalCase(name) in this.dependencies;
+        return this.toPascalCase(name) in this.dependencies;
+    },
+
+    toPascalCase: function (name) {
+        return name[0].toUpperCase() + name.substring(1);
     },
 
     isConstructor: function (functionToInspect, name) {
-        return typeof functionToInspect === "function" && changeCase.isUpperCase(name[0]);
+        return typeof functionToInspect === "function" && IS_PASCAL_CASE.test(name);
     },
 
     createInstance: function (constructorFunction) {

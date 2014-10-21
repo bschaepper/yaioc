@@ -38,6 +38,7 @@ describe("yaioc test", function () {
             expect(instance).to.be.instanceof(TargetFunction);
         });
 
+
         it("should throw if dependency cannot be resolved" /*
 
          resolveDependencies: function (constructorFunction, name) {
@@ -54,6 +55,15 @@ describe("yaioc test", function () {
          },
 
         */);
+
+        it("should resolve types which end in upper case", function () {
+            function TypeAB() { TargetFunction.call(this); }
+
+            container.register(TypeAB);
+
+            var instance = container.get("typeAB");
+            expect(instance).to.be.instanceof(TypeAB);
+        });
 
     });
 
@@ -152,6 +162,17 @@ describe("yaioc test", function () {
             var resolvedFoo = wrappedContainer.get("foo");
 
             expect(resolvedFoo).to.be.eql(void 0);
+        });
+
+        it("should resolve constructors in wrapped container", function () {
+            var wrappedContainer = yaioc.container();
+            var container = yaioc.container(wrappedContainer);
+
+            wrappedContainer.register(TargetFunction);
+
+            var targetFunction = container.get("targetFunction");
+
+            expect(targetFunction).to.be.a.instanceof(TargetFunction);
         });
 
     });
