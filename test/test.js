@@ -38,6 +38,15 @@ describe("yaioc test", function () {
             expect(instance).to.be.instanceof(TargetFunction);
         });
 
+        it("should resolve types which end in upper case", function () {
+            function TypeAB() { TargetFunction.call(this); }
+
+            container.register(TypeAB);
+
+            var instance = container.get("typeAB");
+            expect(instance).to.be.instanceof(TypeAB);
+        });
+
     });
 
     describe("get", function () {
