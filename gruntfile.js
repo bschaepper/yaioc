@@ -39,6 +39,12 @@ module.exports = function (grunt) {
                     coverageFolder: "./coverage"
                 }
             }
+        },
+
+        release: {
+            options: {
+                tagName: 'release-<%= version %>'
+            }
         }
 
     });
