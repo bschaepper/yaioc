@@ -27,7 +27,7 @@ Container.prototype = {
     get: function (name) {
         var dependency = this.resolve(name);
 
-        return this.isConstructor(dependency, name) ? this.createInstance(dependency) : dependency;
+        return this.isConstructor(dependency, name) ? this.createInstance(dependency, name) : dependency;
     },
 
     resolve: function (name) {
@@ -54,8 +54,8 @@ Container.prototype = {
         return typeof functionToInspect === "function" && IS_PASCAL_CASE.test(name);
     },
 
-    createInstance: function (constructorFunction) {
-        var dependencies = this.resolveDependencies(constructorFunction);
+    createInstance: function (constructorFunction, name) {
+        var dependencies = this.resolveDependencies(constructorFunction, name);
 
         var instance = Object.create(constructorFunction.prototype);
         constructorFunction.apply(instance, dependencies);

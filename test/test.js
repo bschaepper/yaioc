@@ -22,6 +22,15 @@ describe("yaioc test", function () {
 
     describe("register and resolve", function () {
 
+        it("should return simple value objects", function () {
+            var dependencyOne = {};
+            container.register("dependencyOne", dependencyOne);
+
+            var resolved = container.get("dependencyOne");
+
+            expect(resolved).to.be.equal(dependencyOne);
+        });
+
         it("should instantiate object with dependencies", function () {
             var dependencyOne = {};
             container.register("dependencyOne", dependencyOne);
@@ -38,7 +47,6 @@ describe("yaioc test", function () {
             expect(instance).to.be.instanceof(TargetFunction);
         });
 
-
         it("should throw if dependency cannot be resolved", function () {
             var container = yaioc.container();
             container.register(TargetFunction);
@@ -46,6 +54,24 @@ describe("yaioc test", function () {
             var action = container.get.bind(container, "targetFunction");
 
             expect(action).to.throw(/Could not satisfy dependency/);
+        });
+
+        it("should include name of missing dependency", function () {
+            var container = yaioc.container();
+            container.register(TargetFunction);
+
+            var action = container.get.bind(container, "targetFunction");
+
+            expect(action).to.throw(/dependencyOne/);
+        });
+
+        it("should include traget name of missing dependency", function () {
+            var container = yaioc.container();
+            container.register(TargetFunction);
+
+            var action = container.get.bind(container, "targetFunction");
+
+            expect(action).to.throw(/TargetFunction/);
         });
 
         it("should resolve types which end in upper case", function () {
