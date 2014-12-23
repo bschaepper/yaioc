@@ -43,7 +43,7 @@ module.exports = function (grunt) {
 
         release: {
             options: {
-                tagName: 'release-<%= version %>'
+                tagName: "release-<%= version %>"
             }
         }
 
