@@ -1,65 +1,30 @@
 "use strict";
 
-var ARGUMENT_NAMES = /([^\s,]+)/g;
-var IS_PASCAL_CASE = /^[A-Z][a-zA-Z]*$/;
-var STRIP_COMMENTS = /((\/\/.*$)|(\/\*[\s\S]*?\*\/))/mg;
-
 var Resolver = require("./Resolver");
+var Registry = require("./Registry");
 
 
 function Container(wrappedContainer) {
-    this.factories = {};
-    this.resolver = new Resolver(this);
-    this.wrappedContainer = wrappedContainer;
+    this.registry = new Registry();
+    this.resolver = new Resolver(this.registry, wrappedContainer && wrappedContainer.resolver);
 }
 
 Container.prototype = {
 
     register: function (name, object) {
-        return this.isConstructor(object, name) ?
-            this.registerConstructor(name, object) :
-            this.registerValue(name, object);
-    },
-
-    registerConstructor: function (name, constructorFunction) {
-        var dependencyNames = this.getDependencyNames(constructorFunction);
-        return this.registerFactory(name, this.createInstanceFactory(constructorFunction), dependencyNames);
-    },
-
-    createInstanceFactory: function (constructorFunction) {
-        return function () {
-            var instance = Object.create(constructorFunction.prototype);
-            constructorFunction.apply(instance, arguments);
-            return instance;
-        }.bind(this);
+        return this.registry.register(name, object);
     },
 
     registerValue: function (name, object) {
-        return this.registerFactory(name, function () {
-            return object;
-        }, []);
+        return this.registry.registerValue(name, object);
+    },
+
+    registerConstructor: function (name, constructorFunction, dependencyNames) {
+        return this.registry.registerConstructor(name, constructorFunction, dependencyNames);
     },
 
     registerFactory: function (name, factory, dependencyNames) {
-        if (!dependencyNames) {
-            dependencyNames = this.getDependencyNames(factory);
-        }
-
-        this.factories[name] = {
-            factory: factory,
-            dependencyNames: dependencyNames
-        };
-    },
-
-    isConstructor: function (functionToInspect, name) {
-        return typeof functionToInspect === "function" && IS_PASCAL_CASE.test(name);
-    },
-
-    getDependencyNames: function (targetFunction) {
-        // based on http://stackoverflow.com/a/9924463/1551204
-        var fnStr = targetFunction.toString().replace(STRIP_COMMENTS, "");
-        var result = fnStr.slice(fnStr.indexOf("(") + 1, fnStr.indexOf(")")).match(ARGUMENT_NAMES);
-        return result || [];
+        return this.registry.registerFactory(name, factory, dependencyNames);
     },
 
     get: function (name) {
@@ -67,6 +32,10 @@ Container.prototype = {
     }
 
 };
+
+module.exports = Container;
+
+
 
 Object.keys(Container.prototype).forEach(function (methodName) {
     if (methodName.indexOf("register") !== 0) {
@@ -98,5 +67,3 @@ Object.keys(Container.prototype).forEach(function (methodName) {
         }
     }
 });
-
-module.exports = Container;

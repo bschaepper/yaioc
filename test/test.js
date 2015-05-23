@@ -106,7 +106,7 @@ describe("yaioc test", function () {
 
             container.register(TargetFunction);
 
-            expect("TargetFunction" in container.factories).to.be.eql(true);
+            expect("TargetFunction" in container.registry.factories).to.be.eql(true);
         });
 
         it("should throw if no name is present and cannot be resolver", function () {
@@ -149,7 +149,7 @@ describe("yaioc test", function () {
 
         it("should return empty list if no dependencies found", function () {
 
-            var names = container.getDependencyNames(function () {
+            var names = container.registry.getDependencyNames(function () {
             });
 
             expect(names).to.be.an("array");
@@ -158,7 +158,7 @@ describe("yaioc test", function () {
 
         it("should return names of dependencies found", function () {
 
-            var names = container.getDependencyNames(TargetFunction);
+            var names = container.registry.getDependencyNames(TargetFunction);
 
             expect(names).to.be.eql(["dependencyOne", "dependencyTwo"]);
         });

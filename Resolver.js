@@ -1,22 +1,23 @@
 "use strict";
 
 
-function Resolver(container) {
-    this.container = container;
+function Resolver(registry, wrappedResolver) {
+    this.registry = registry;
+    this.wrappedResolver = wrappedResolver;
 }
 
 Resolver.prototype = {
 
     get: function (name) {
-        return this.resolve(name) || this.resolveInWrappedContainer(name);
+        return this.resolve(name) || this.resolveInWrappedResolver(name);
     },
 
     resolve: function (name) {
-        var factory = this.lookup(name);
+        var factory = this.registry.lookup(name);
 
         if (!factory) {
             name = this.toPascalCase(name);
-            factory = this.lookup(name);
+            factory = this.registry.lookup(name);
         }
 
         if (factory) {
@@ -24,10 +25,6 @@ Resolver.prototype = {
 
             return factory.factory.apply(null, dependencies);
         }
-    },
-
-    lookup: function (name) {
-        return this.container.factories[name];
     },
 
     toPascalCase: function (name) {
@@ -48,8 +45,8 @@ Resolver.prototype = {
         }
     },
 
-    resolveInWrappedContainer: function (name) {
-        return this.container.wrappedContainer && this.container.wrappedContainer.get(name);
+    resolveInWrappedResolver: function (name) {
+        return this.wrappedResolver && this.wrappedResolver.get(name);
     }
 
 };
