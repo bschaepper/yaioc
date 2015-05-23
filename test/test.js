@@ -106,15 +106,41 @@ describe("yaioc test", function () {
 
             container.register(TargetFunction);
 
-            expect("TargetFunction" in container.dependencies).to.be.eql(true);
-            expect(container.dependencies.TargetFunction).to.be.eql(TargetFunction);
+            expect("TargetFunction" in container.factories).to.be.eql(true);
         });
 
         it("should throw if no name is present and cannot be resolver", function () {
 
-            var callRegister = container.register.bind({});
+            var callRegister = container.register.bind(container, {});
 
             expect(callRegister).to.throw(/no name provided for dependency/);
+        });
+
+    });
+
+    describe("registerFactory", function () {
+
+        it("should resolve to result of given function", function () {
+            var result = {};
+            container.registerFactory("factoryThing", function () {
+                return result;
+            });
+
+            var actualResult = container.get("factoryThing");
+
+            expect(actualResult).to.be.eql(result);
+        });
+
+        it("should resolve and provide dependencies of given function", function () {
+            var dependencyOne = {};
+            container.register("dependencyOne", dependencyOne);
+            container.registerFactory("factoryThing", function (dependencyOne) {
+                return dependencyOne;
+            });
+
+            var actualResult = container.get("factoryThing");
+
+            expect(actualResult).to.be.equal(dependencyOne);
         });
 
     });
