@@ -45,6 +45,25 @@ assert(bar.foo instanceof Foo);
 assert(bar.value === "static value");
 ````
 
+
+### Factories
+
+Components can also be registered as Factories, a function which provides the result of a component lookup:
+
+```javascript
+var container = yaioc.container();
+container.register("value", "static value");
+container.registerFactory("foo", function (value) {
+    return { value: value };
+});
+
+
+var foo = container.get("foo");
+
+assert(foo.value === "static value");
+````
+
+
 ### Container hierarchies
 
 A container can get access to components registered in a wrapped container, but not vice-versa 
