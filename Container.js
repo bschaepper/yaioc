@@ -13,24 +13,12 @@ function Container(wrappedContainer) {
 Container.prototype = {
 
     register: function (name, object) {
-        if (typeof name === "function") {
-            return this.register(name.name, name);
-        }
-
-        this.checkDependencyName(name);
-
         return this.isConstructor(object, name) ?
             this.registerConstructor(name, object) :
             this.registerValue(name, object);
     },
 
     registerConstructor: function (name, constructorFunction) {
-        if (typeof name === "function") {
-            return this.registerConstructor(name.name, name);
-        }
-
-        this.checkDependencyName(name);
-
         var dependencyNames = this.getDependencyNames(constructorFunction);
         return this.registerFactory(name, this.createInstanceFactory(constructorFunction), dependencyNames);
     },
@@ -44,24 +32,12 @@ Container.prototype = {
     },
 
     registerValue: function (name, object) {
-        if (typeof name === "function") {
-            return this.registerValue(name.name, name);
-        }
-
-        this.checkDependencyName(name);
-
         return this.registerFactory(name, function () {
             return object;
         }, []);
     },
 
     registerFactory: function (name, factory, dependencyNames) {
-        if (typeof name === "function") {
-            return this.registerFactory(name.name, name);
-        }
-
-        this.checkDependencyName(name);
-
         if (!dependencyNames) {
             dependencyNames = this.getDependencyNames(factory);
         }
@@ -70,16 +46,6 @@ Container.prototype = {
             factory: factory,
             dependencyNames: dependencyNames
         };
-    },
-
-    checkDependencyName: function (name) {
-        if (typeof name !== "string") {
-            name = name.name;
-        }
-
-        if (!name) {
-            throw new Error("no name provided for dependency");
-        }
     },
 
     isConstructor: function (functionToInspect, name) {
@@ -135,5 +101,36 @@ Container.prototype = {
     }
 
 };
+
+Object.keys(Container.prototype).forEach(function (methodName) {
+    if (methodName.indexOf("register") !== 0) {
+        return;
+    }
+
+    Container.prototype[methodName] = addPreconditionsCheck(Container.prototype[methodName]);
+
+    function addPreconditionsCheck(method) {
+        return function () {
+            return method.apply(this, arrangeAndCheckArguments(arguments));
+        };
+    }
+
+    function arrangeAndCheckArguments(args) {
+        args = Array.prototype.slice.call(args);
+        checkName(args[0]);
+
+        if (typeof args[0] === "function") {
+            args.unshift(args[0].name);
+        }
+
+        return args;
+    }
+
+    function checkName(name) {
+        if (!name || typeof name !== "string" && !name.name) {
+            throw new Error("no name provided for dependency");
+        }
+    }
+});
 
 module.exports = Container;
