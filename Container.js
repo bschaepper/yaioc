@@ -4,9 +4,12 @@ var ARGUMENT_NAMES = /([^\s,]+)/g;
 var IS_PASCAL_CASE = /^[A-Z][a-zA-Z]*$/;
 var STRIP_COMMENTS = /((\/\/.*$)|(\/\*[\s\S]*?\*\/))/mg;
 
+var Resolver = require("./Resolver");
+
 
 function Container(wrappedContainer) {
     this.factories = {};
+    this.resolver = new Resolver(this);
     this.wrappedContainer = wrappedContainer;
 }
 
@@ -60,44 +63,7 @@ Container.prototype = {
     },
 
     get: function (name) {
-        return this.resolve(name) || this.resolveInWrappedContainer(name);
-    },
-
-    resolve: function (name) {
-        var factory = this.factories[name];
-
-        if (!factory) {
-            name = this.toPascalCase(name);
-            factory = this.factories[name];
-        }
-
-        if (factory) {
-            var dependencies = this.resolveDependencies(factory.dependencyNames, name);
-
-            return factory.factory.apply(null, dependencies);
-        }
-    },
-
-    toPascalCase: function (name) {
-        return name[0].toUpperCase() + name.substring(1);
-    },
-
-    resolveDependencies: function (dependencyNames, name) {
-        var dependencies = dependencyNames.map(this.get, this);
-
-        dependencies.forEach(this.checkDependency.bind(this, dependencyNames, name));
-
-        return dependencies;
-    },
-
-    checkDependency: function (dependencyNames, name, dependency, index) {
-        if (!dependency) {
-            throw new Error("Could not satisfy dependency '" + dependencyNames[index] + "' required by '" + name + "'");
-        }
-    },
-
-    resolveInWrappedContainer: function (name) {
-        return this.wrappedContainer && this.wrappedContainer.get(name);
+        return this.resolver.get(name);
     }
 
 };
