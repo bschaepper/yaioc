@@ -24,6 +24,15 @@ describe("yaioc test", function () {
 
         it("should return simple value objects", function () {
             var dependencyOne = {};
+            container.registerValue("dependencyOne", dependencyOne);
+
+            var resolved = container.get("dependencyOne");
+
+            expect(resolved).to.be.equal(dependencyOne);
+        });
+
+        it("should return simple value objects registered via general method", function () {
+            var dependencyOne = {};
             container.register("dependencyOne", dependencyOne);
 
             var resolved = container.get("dependencyOne");
@@ -37,13 +46,24 @@ describe("yaioc test", function () {
             var dependencyTwo = {};
             container.register("dependencyTwo", dependencyTwo);
 
-            container.register("TargetFunction", TargetFunction);
+            container.registerConstructor("TargetFunction", TargetFunction);
 
             var instance = container.get("TargetFunction");
 
             expect(instance.args.length).to.be.eql(2);
             expect(instance.dependencyOne).to.be.eql(dependencyOne);
             expect(instance.dependencyTwo).to.be.eql(dependencyTwo);
+            expect(instance).to.be.instanceof(TargetFunction);
+        });
+
+        it("should instantiate object with dependencies via general method", function () {
+            container.register("dependencyOne", {});
+            container.register("dependencyTwo", {});
+            container.register("TargetFunction", TargetFunction);
+
+            var instance = container.get("TargetFunction");
+
+            expect(instance.args.length).to.be.eql(2);
             expect(instance).to.be.instanceof(TargetFunction);
         });
 
