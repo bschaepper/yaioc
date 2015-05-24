@@ -138,6 +138,36 @@ describe("yaioc test", function () {
 
     });
 
+    describe("cache", function () {
+
+        it("should resolve to new instance on every call", function () {
+            container.register("dependencyOne", {});
+            container.register("dependencyTwo", {});
+            container.register(TargetFunction);
+
+            var instanceA = container.get("targetFunction");
+            var instanceB = container.get("targetFunction");
+
+            expect(instanceA).to.be.instanceof(TargetFunction);
+            expect(instanceB).to.be.instanceof(TargetFunction);
+            expect(instanceA === instanceB).to.be.eql(false);
+        });
+
+        it("should resolve to same instance on every call, when registered in cache", function () {
+            container.register("dependencyOne", {});
+            container.register("dependencyTwo", {});
+            container.cache().register(TargetFunction);
+
+            var instanceA = container.get("targetFunction");
+            var instanceB = container.get("targetFunction");
+
+            expect(instanceA).to.be.instanceof(TargetFunction);
+            expect(instanceB).to.be.instanceof(TargetFunction);
+            expect(instanceA === instanceB).to.be.eql(true);
+        });
+
+    });
+
     describe("registerFactory", function () {
 
         it("should resolve to result of given function", function () {

@@ -2,6 +2,7 @@
 
 var Resolver = require("./Resolver");
 var Registry = require("./Registry");
+var Cache = require("./Cache");
 
 
 function Container(wrappedContainer) {
@@ -27,6 +28,14 @@ Container.prototype = {
         return this.registry.registerFactory(name, factory, dependencyNames);
     },
 
+    cache: function () {
+        var cache = Object.create(Container.prototype);
+        this.cache = function () { return cache; };
+        cache.registry = new Cache(this.registry);
+        cache.resolver = this.resolver;
+        return cache;
+    },
+
     get: function (name) {
         return this.resolver.get(name);
     }
@@ -34,7 +43,6 @@ Container.prototype = {
 };
 
 module.exports = Container;
-
 
 
 Object.keys(Container.prototype).forEach(function (methodName) {
