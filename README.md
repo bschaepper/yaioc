@@ -63,6 +63,33 @@ var foo = container.get("foo");
 assert(foo.value === "static value");
 ````
 
+### Caching
+
+If you want to have a single instance of a component, use caching:
+
+````javascript
+container.cache().registerFactory("foo", function factory() {
+    return {};
+});
+
+var fooOne = container.get("foo");
+var fooTwo = container.get("foo");
+
+assert(fooOne === fooTwo);
+````
+
+This works with factories and constructors:
+
+````javascript
+container.cache().register(Foo);
+
+var fooOne = container.get("foo");
+var fooTwo = container.get("foo");
+
+assert(fooOne === fooTwo);
+````
+
+
 
 ### Container hierarchies
 
