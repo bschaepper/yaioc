@@ -103,11 +103,25 @@ describe("yaioc test", function () {
             expect(instance).to.be.instanceof(TypeAB);
         });
 
+        it("should use name of function if present", function () {
+
+            container.register(TargetFunction);
+
+            expect("TargetFunction" in container.registry.factories).to.be.eql(true);
+        });
+
+        it("should throw if no name is present and cannot be resolved", function () {
+
+            var callRegister = container.register.bind(container, {});
+
+            expect(callRegister).to.throw(/no name provided for dependency/);
+        });
+
     });
 
     describe("get", function () {
 
-        it("should instanciate registered constructor function as dependency", function () {
+        it("should instantiate registered constructor function as dependency", function () {
             function Dependency() {}
             function Target(dependency) { this.dependency = dependency; }
             container.register(Dependency);
@@ -116,24 +130,6 @@ describe("yaioc test", function () {
             var targetInstance = container.get("Target");
 
             expect(targetInstance.dependency).to.be.instanceof(Dependency);
-        });
-
-    });
-
-    describe("register", function () {
-
-        it("should use name of function if present", function () {
-
-            container.register(TargetFunction);
-
-            expect("TargetFunction" in container.registry.factories).to.be.eql(true);
-        });
-
-        it("should throw if no name is present and cannot be resolver", function () {
-
-            var callRegister = container.register.bind(container, {});
-
-            expect(callRegister).to.throw(/no name provided for dependency/);
         });
 
     });
