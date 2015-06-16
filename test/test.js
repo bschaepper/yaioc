@@ -189,6 +189,18 @@ describe("yaioc test", function () {
             expect(actualResult).to.be.equal(dependencyOne);
         });
 
+        it("should resolve and provide dependencies of given cached function", function () {
+            var dependencyOne = {};
+            container.register("dependencyOne", dependencyOne);
+            container.cache().registerFactory("factoryThing", function (dependencyOne) {
+                return dependencyOne;
+            });
+
+            var actualResult = container.get("factoryThing");
+
+            expect(actualResult).to.be.equal(dependencyOne);
+        });
+
     });
 
     describe("getDependencyNames", function () {

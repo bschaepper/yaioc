@@ -11,8 +11,8 @@ function Cache(registry) {
 Cache.prototype = Object.create(Registry.prototype);
 
 Cache.prototype.registerFactory = function (name, factory, dependencyNames) {
-    factory = this.createFactoryCache(factory);
     dependencyNames = dependencyNames || this.getDependencyNames(factory);
+    factory = this.createFactoryCache(factory);
 
     return this.registry.registerFactory(name, factory, dependencyNames);
 };
