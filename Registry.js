@@ -24,9 +24,8 @@ Registry.prototype = {
 
     createInstanceFactory: function (constructorFunction) {
         return function () {
-            var instance = Object.create(constructorFunction.prototype);
-            constructorFunction.apply(instance, arguments);
-            return instance;
+            var args = [null].concat(Array.prototype.slice.call(arguments))
+            return new (Function.prototype.bind.apply(constructorFunction, args));
         }.bind(this);
     },
 
