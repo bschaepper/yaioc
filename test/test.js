@@ -14,6 +14,14 @@ describe("yaioc test", function () {
         this.dependencyTwo = dependencyTwo;
     }
 
+    class TargetClass {
+        constructor(dependencyOne, dependencyTwo) {
+            this.args = arguments;
+            this.dependencyOne = dependencyOne;
+            this.dependencyTwo = dependencyTwo;
+        }
+    }
+
     var container;
 
     beforeEach(function () {
@@ -65,6 +73,33 @@ describe("yaioc test", function () {
 
             expect(instance.args.length).to.be.eql(2);
             expect(instance).to.be.instanceof(TargetFunction);
+        });
+
+        it("should instantiate classes with dependencies", function () {
+            var dependencyOne = {};
+            container.register("dependencyOne", dependencyOne);
+            var dependencyTwo = {};
+            container.register("dependencyTwo", dependencyTwo);
+
+            container.registerConstructor("TargetClass", TargetClass);
+
+            var instance = container.get("TargetClass");
+
+            expect(instance.args.length).to.be.eql(2);
+            expect(instance.dependencyOne).to.be.eql(dependencyOne);
+            expect(instance.dependencyTwo).to.be.eql(dependencyTwo);
+            expect(instance).to.be.instanceof(TargetClass);
+        });
+
+        it("should instantiate classes with dependencies via general method", function () {
+            container.register("dependencyOne", {});
+            container.register("dependencyTwo", {});
+            container.register("TargetClass", TargetClass);
+
+            var instance = container.get("TargetClass");
+
+            expect(instance.args.length).to.be.eql(2);
+            expect(instance).to.be.instanceof(TargetClass);
         });
 
         it("should throw if dependency cannot be resolved", function () {
