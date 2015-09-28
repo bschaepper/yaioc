@@ -5,22 +5,11 @@ var expect = chai.expect;
 
 var yaioc = require("../yaioc.js");
 
+var TargetFunction = require("./TestMocks").TargetFunction;
+var TargetClass = require("./TestMocks").TargetClass;
+
 
 describe("yaioc test", function () {
-
-    function TargetFunction(dependencyOne, dependencyTwo) {
-        this.args = arguments;
-        this.dependencyOne = dependencyOne;
-        this.dependencyTwo = dependencyTwo;
-    }
-
-    class TargetClass {
-        constructor(dependencyOne, dependencyTwo) {
-            this.args = arguments;
-            this.dependencyOne = dependencyOne;
-            this.dependencyTwo = dependencyTwo;
-        }
-    }
 
     var container;
 
@@ -102,6 +91,27 @@ describe("yaioc test", function () {
             expect(instance).to.be.instanceof(TargetClass);
         });
 
+        it("should resolve types which end in upper case", function () {
+            function TypeAB() { TargetFunction.call(this); }
+
+            container.register(TypeAB);
+
+            var instance = container.get("typeAB");
+            expect(instance).to.be.instanceof(TypeAB);
+        });
+
+        it("should use name of function if present", function () {
+
+            container.register(TargetFunction);
+
+            expect("TargetFunction" in container.registry.factories).to.be.eql(true);
+        });
+
+
+    });
+
+    describe("errors", function () {
+
         it("should throw if dependency cannot be resolved", function () {
             var container = yaioc.container();
             container.register(TargetFunction);
@@ -127,22 +137,6 @@ describe("yaioc test", function () {
             var action = container.get.bind(container, "targetFunction");
 
             expect(action).to.throw(/TargetFunction/);
-        });
-
-        it("should resolve types which end in upper case", function () {
-            function TypeAB() { TargetFunction.call(this); }
-
-            container.register(TypeAB);
-
-            var instance = container.get("typeAB");
-            expect(instance).to.be.instanceof(TypeAB);
-        });
-
-        it("should use name of function if present", function () {
-
-            container.register(TargetFunction);
-
-            expect("TargetFunction" in container.registry.factories).to.be.eql(true);
         });
 
         it("should throw if no name is present and cannot be resolved", function () {

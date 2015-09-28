@@ -8,13 +8,17 @@
     "maxparams"     : 5,          // The max number of formal parameters allowed per function
     "maxcomplexity" : 3,          // The max cyclomatic complexity of code
 
-    // Development.s
+    // Developments
     "debug"         : false,      // Allow debugger statements e.g. browser breakpoints.
     "devel"         : true,       // Allow developments statements e.g. `console.log();`.
 
-    // ECMAScript 5.
+    // ECMAScript 5
     "strict"        : true,       // Require `use strict` pragma  in every file.
     "globalstrict"  : true,       // Allow global "use strict" (also enables 'strict').
+
+
+    // ECMAScript 6
+    "esnext"        : true,       // Enable Harmony Features
 
     // The Good Parts.
     "asi"           : false,      // Tolerate Automatic Semicolon Insertion (no semicolons).
