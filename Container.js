@@ -7,7 +7,21 @@ var Cache = require("./Cache");
 
 function Container(wrappedContainer) {
     this.registry = new Registry();
-    this.resolver = new Resolver(this.registry, wrappedContainer && wrappedContainer.resolver);
+    this.resolver = new Resolver(this.registry, getWrappedResolvers(wrappedContainer));
+}
+
+function getWrappedResolvers(wrappedContainer) {
+    if (!wrappedContainer) {
+        return [];
+    }
+
+    if (!Array.isArray(wrappedContainer)) {
+        return [wrappedContainer.resolver];
+    }
+
+    return wrappedContainer.map(function (container) {
+        return container.resolver;
+    });
 }
 
 Container.prototype = {

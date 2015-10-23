@@ -1,9 +1,9 @@
 "use strict";
 
 
-function Resolver(registry, wrappedResolver) {
+function Resolver(registry, wrappedResolvers) {
     this.registry = registry;
-    this.wrappedResolver = wrappedResolver;
+    this.wrappedResolvers = wrappedResolvers;
 }
 
 Resolver.prototype = {
@@ -46,7 +46,14 @@ Resolver.prototype = {
     },
 
     resolveInWrappedResolver: function (name) {
-        return this.wrappedResolver && this.wrappedResolver.get(name);
+        var found;
+
+        this.wrappedResolvers.some(function (resolver) {
+            found = resolver.get(name);
+            return found;
+        });
+
+        return found;
     }
 
 };

@@ -45,6 +45,13 @@ assert(bar.foo instanceof Foo);
 assert(bar.value === "static value");
 ````
 
+### Naming Conventions
+
+```javascript
+var FooBar = ...; // this refers to a Class/Constructor function named "FooBar"
+var fooBar = ...; // this refers to an instance of FooBar 
+function SomeConstructor(fooBar) { ... } // an instance of FooBar will be passed in
+````
 
 ### Factories
 
@@ -93,7 +100,8 @@ assert(fooOne === fooTwo);
 
 ### Container hierarchies
 
-A container can get access to components registered in a wrapped container, but not vice-versa 
+A container can get access to components registered in a wrapped containers, but not vice-versa. 
+If you want to wrap multiple containers, pass in an array of containers
 
 ```javascript
 var wrappedContainer = yaioc.container();
