@@ -283,6 +283,20 @@ describe("yaioc test", function () {
             expect(resolvedFoo === foo).to.be.eql(true);
         });
 
+        it("should optionally take an array of child containers", function () {
+            var childContainers = [yaioc.container(), yaioc.container()];
+            var container = yaioc.container(childContainers);
+
+            var foos = [{}, {}];
+            childContainers[0].register("foo0", foos[0]);
+            childContainers[1].register("foo1", foos[1]);
+
+            var resolvedFoos = [container.get("foo0"), container.get("foo1")];
+
+            expect(resolvedFoos[0] === foos[0]).to.be.eql(true);
+            expect(resolvedFoos[1] === foos[1]).to.be.eql(true);
+        });
+
         it("should not resolve dependencies in outer container", function () {
             var wrappedContainer = yaioc.container();
             var container = yaioc.container(wrappedContainer);
