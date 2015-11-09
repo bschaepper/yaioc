@@ -50,9 +50,24 @@ Registry.prototype = {
 
     getDependencyNames: function (targetFunction) {
         // based on http://stackoverflow.com/a/9924463/1551204
-        var fnStr = targetFunction.toString().replace(STRIP_COMMENTS, "");
-        var result = fnStr.slice(fnStr.indexOf("(") + 1, fnStr.indexOf(")")).match(ARGUMENT_NAMES);
-        return result || [];
+        var source = this.getConstructorSource(targetFunction);
+        var argumentNames = source.slice(source.indexOf("(") + 1, source.indexOf(")")).match(ARGUMENT_NAMES);
+        return argumentNames || [];
+    },
+
+    getConstructorSource: function (targetFunction) {
+        var source = targetFunction.toString().replace(STRIP_COMMENTS, "");
+
+        if (source.indexOf("class") === 0) {
+            source = this.getClassConstructorSource(source);
+        }
+
+        return source;
+    },
+
+    getClassConstructorSource: function (source) {
+        var constructorIndex = source.indexOf("constructor");
+        return constructorIndex === -1 ? "" : source.slice(constructorIndex);
     },
 
     lookup: function (name) {

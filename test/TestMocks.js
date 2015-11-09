@@ -7,6 +7,9 @@ function TargetFunction(dependencyOne, dependencyTwo) {
 }
 
 class TargetClass {
+
+    foo(){}
+
     constructor(dependencyOne, dependencyTwo) {
         this.args = arguments;
         this.dependencyOne = dependencyOne;

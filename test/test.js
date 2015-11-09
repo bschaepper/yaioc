@@ -91,6 +91,17 @@ describe("yaioc test", function () {
             expect(instance).to.be.instanceof(TargetClass);
         });
 
+        it("should instantiate classes with default (no) constructor", function () {
+            var EmptyClass = class {};
+            container.register("dependencyOne", {});
+            container.register("dependencyTwo", {});
+            container.register("TargetClass", EmptyClass);
+
+            var instance = container.get("TargetClass");
+
+            expect(instance).to.be.instanceof(EmptyClass);
+        });
+
         it("should resolve types which end in upper case", function () {
             function TypeAB() { TargetFunction.call(this); }
 
