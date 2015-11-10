@@ -100,7 +100,7 @@ assert(fooOne === fooTwo);
 
 ### Container hierarchies
 
-A container can get access to components registered in a wrapped containers, but not vice-versa. 
+A container can get access to components registered in wrapped containers, but not vice-versa. 
 If you want to wrap multiple containers, pass in an array of containers
 
 ```javascript
