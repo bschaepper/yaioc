@@ -70,6 +70,50 @@ var foo = container.get("foo");
 assert(foo.value === "static value");
 ````
 
+### Adaptors
+
+Adaptors work similar to Factories, but are very low level. This is the most basic Interface, 
+an adaptor will have to resolve all dependencies for itself. This is useful if you have to do 
+additional work, or a conditional lookup:
+
+```javascript
+var container = yaioc.container();
+container.register("evenValue", "even value");
+container.register("oddValue", "odd value");
+container.registerAdaptor("foo", function (container) {
+    var value = container.get(Date.now() % 2 ? "oddValue" : "evenValue"); 
+    return { value: value };
+});
+
+
+var foo = container.get("foo");
+
+assert(foo.value === "even value" || foo.value === "odd value");
+````
+
+There is also an object-oriented interface for adaptors. This is handy for extracting a more 
+advanced calculation or lookup to a separate class.
+
+```javascript
+function FooAdaptor() {
+}
+
+FooAdaptor.prototype.getComponentInstance = function (container) {
+    var result;
+    // work
+    return new Foo(result);
+};
+
+
+var container = yaioc.container();
+container.registerAdaptor("foo", new FooAdaptor());
+
+
+var foo = container.get("foo");
+
+assert(foo instanceof Foo);
+````
+
 ### Caching
 
 If you want to have a single instance of a component, use caching:
