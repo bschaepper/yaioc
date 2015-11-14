@@ -201,6 +201,25 @@ describe("yaioc test", function () {
             expect(instanceA === instanceB).to.be.eql(true);
         });
 
+        it("should forgive subsequent cache() calls and return same cache", function () {
+            var cachedContainer1 = container.cache();
+
+            var cachedContainer2 = cachedContainer1.cache();
+
+            expect(cachedContainer1 === cachedContainer2).to.be.eql(true);
+        });
+
+        it("should allow short form of adaptor to be cached", function () {
+            container.cache().registerAdaptor("targetAdaptor", function () {
+                return {};
+            });
+
+            var instanceA = container.get("targetAdaptor");
+            var instanceB = container.get("targetAdaptor");
+
+            expect(instanceA === instanceB).to.be.eql(true);
+        });
+
     });
 
     describe("registerFactory", function () {
@@ -248,6 +267,19 @@ describe("yaioc test", function () {
             var result = {};
             container.registerAdaptor("adaptorThing", function () {
                 return result;
+            });
+
+            var actualResult = container.get("adaptorThing");
+
+            expect(actualResult).to.be.eql(result);
+        });
+
+        it("should resolve to result of given adaptor object", function () {
+            var result = {};
+            container.registerAdaptor("adaptorThing", {
+                getComponentInstance: function () {
+                    return result;
+                }
             });
 
             var actualResult = container.get("adaptorThing");
