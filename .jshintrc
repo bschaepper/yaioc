@@ -16,7 +16,6 @@
     "strict"        : true,       // Require `use strict` pragma  in every file.
     "globalstrict"  : true,       // Allow global "use strict" (also enables 'strict').
 
-
     // ECMAScript 6
     "esnext"        : true,       // Enable Harmony Features
 

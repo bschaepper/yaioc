@@ -1,16 +1,16 @@
 "use strict";
 
 
-function ValueAdapter(value) {
-    this.value = value;
-}
+class ValueAdapter {
 
-ValueAdapter.prototype = {
+    constructor(value) {
+        this.value = value;
+    }
 
-    getComponentInstance: function () {
+    getComponentInstance() {
         return this.value;
     }
 
-};
+}
 
 module.exports = ValueAdapter;

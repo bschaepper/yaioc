@@ -1,18 +1,18 @@
 "use strict";
 
 
-function Resolver(container, wrappedResolvers) {
-    this.container = container;
-    this.wrappedResolvers = wrappedResolvers;
-}
+class Resolver {
 
-Resolver.prototype = {
+    constructor(container, wrappedResolvers) {
+        this.container = container;
+        this.wrappedResolvers = wrappedResolvers;
+    }
 
-    get: function (name, target) {
+    get(name, target) {
         return this.resolve(name, target) || this.resolveInWrappedResolver(name, target);
-    },
+    }
 
-    resolve: function (name, target) {
+    resolve(name, target) {
         var adaptor = this.container.lookup(name);
 
         if (!adaptor) {
@@ -23,16 +23,16 @@ Resolver.prototype = {
         if (adaptor) {
             return adaptor.getComponentInstance(this.container, target);
         }
-    },
+    }
 
-    toPascalCase: function (name) {
+    toPascalCase(name) {
         return name[0].toUpperCase() + name.substring(1);
-    },
+    }
 
-    resolveInWrappedResolver: function (name, target) {
+    resolveInWrappedResolver(name, target) {
         var found;
 
-        this.wrappedResolvers.some(function (resolver) {
+        this.wrappedResolvers.some((resolver) => {
             found = resolver.get(name, target);
             return found;
         });
@@ -40,6 +40,6 @@ Resolver.prototype = {
         return found;
     }
 
-};
+}
 
 module.exports = Resolver;

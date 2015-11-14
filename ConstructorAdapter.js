@@ -4,16 +4,18 @@ var ReflectionUtils = require("./ReflectionUtils");
 var DependencyResolvingAdapter = require("./DependencyResolvingAdapter");
 
 
-function ConstructorAdapter(name, constructorFunction, dependencyNames) {
-    dependencyNames = dependencyNames || ReflectionUtils.getDependencyNames(constructorFunction);
+class ConstructorAdapter extends DependencyResolvingAdapter {
 
-    var factory = function () {
-        return ReflectionUtils.createInstance(constructorFunction, arguments);
-    };
+    constructor(name, constructorFunction, dependencyNames) {
+        dependencyNames = dependencyNames || ReflectionUtils.getDependencyNames(constructorFunction);
 
-    DependencyResolvingAdapter.call(this, name, factory, dependencyNames);
+        var factory = function () {
+            return ReflectionUtils.createInstance(constructorFunction, arguments);
+        };
+
+        super(name, factory, dependencyNames);
+    }
+
 }
-
-ConstructorAdapter.prototype = Object.create(DependencyResolvingAdapter.prototype);
 
 module.exports = ConstructorAdapter;
