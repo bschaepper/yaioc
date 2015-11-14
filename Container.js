@@ -1,13 +1,16 @@
 "use strict";
 
 var Resolver = require("./Resolver");
-var Registry = require("./Registry");
+var ReflectionUtils = require("./ReflectionUtils");
+var ValueAdapter = require("./ValueAdapter");
+var DependencyResolvingAdapter = require("./DependencyResolvingAdapter");
+var ConstructorAdapter = require("./ConstructorAdapter");
 var Cache = require("./Cache");
 
 
 function Container(wrappedContainer) {
-    this.registry = new Registry();
-    this.resolver = new Resolver(this.registry, getWrappedResolvers(wrappedContainer));
+    this.adaptors = {};
+    this.resolver = new Resolver(this, getWrappedResolvers(wrappedContainer));
 }
 
 function getWrappedResolvers(wrappedContainer) {
@@ -27,38 +30,44 @@ function getWrappedResolvers(wrappedContainer) {
 Container.prototype = {
 
     register: function (name, object) {
-        return this.registry.register(name, object);
-    },
-
-    registerValue: function (name, object) {
-        return this.registry.registerValue(name, object);
+        return ReflectionUtils.isConstructor(object, name) ?
+            this.registerConstructor(name, object) :
+            this.registerValue(name, object);
     },
 
     registerConstructor: function (name, constructorFunction, dependencyNames) {
-        return this.registry.registerConstructor(name, constructorFunction, dependencyNames);
+        return this.registerAdaptor(name, new ConstructorAdapter(name, constructorFunction, dependencyNames));
+    },
+
+    registerValue: function (name, object) {
+        return this.registerAdaptor(name, new ValueAdapter(object));
     },
 
     registerFactory: function (name, factory, dependencyNames) {
-        return this.registry.registerFactory(name, factory, dependencyNames);
+        return this.registerAdaptor(name, new DependencyResolvingAdapter(name, factory, dependencyNames));
     },
 
     registerAdaptor: function (name, adaptor) {
-        var container = this;
-        return this.registry.registerAdaptor(name, function () {
-            return adaptor(container);
-        });
+        if (typeof adaptor === "function") {
+            adaptor = { getComponentInstance: adaptor };
+        }
+
+        this.adaptors[name] = adaptor;
     },
 
     cache: function () {
-        var cache = Object.create(Container.prototype);
-        this.cache = function () { return cache; };
-        cache.registry = new Cache(this.registry);
-        cache.resolver = this.resolver;
+        var cache = new Container(this);
+        Cache.call(cache, this);
+        this.cache = cache.cache;
         return cache;
     },
 
     get: function (name) {
         return this.resolver.get(name);
+    },
+
+    lookup: function (name) {
+        return this.adaptors[name];
     }
 
 };

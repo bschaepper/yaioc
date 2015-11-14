@@ -115,7 +115,7 @@ describe("yaioc test", function () {
 
             container.register(TargetFunction);
 
-            expect("TargetFunction" in container.registry.factories).to.be.eql(true);
+            expect("TargetFunction" in container.adaptors).to.be.eql(true);
         });
 
     });

@@ -1,30 +1,23 @@
 "use strict";
 
-var Registry = require("./Registry");
-var ReflectionUtils = require("./ReflectionUtils");
-
-
-function Cache(registry) {
-    this.registry = registry;
-    this.factories = registry.factories;
-}
-
-Cache.prototype = Object.create(Registry.prototype);
-
-Cache.prototype.registerFactory = function (name, factory, dependencyNames) {
-    dependencyNames = dependencyNames || ReflectionUtils.getDependencyNames(factory);
-    factory = this.createFactoryCache(factory);
-
-    return this.registry.registerFactory(name, factory, dependencyNames);
-};
-
-Cache.prototype.createFactoryCache = function (factory) {
-    var cached;
-
-    return function () {
-        cached = cached || factory.apply(null, arguments);
-        return cached;
+function Cache(container) {
+    this.cache = function () {
+        return this;
     };
-};
+
+    this.registerAdaptor = function (name, adaptor) {
+        if (typeof adaptor === "function") {
+            adaptor = { getComponentInstance: adaptor };
+        }
+
+        var cached;
+        return container.registerAdaptor(name, {
+            getComponentInstance: function (container) {
+                cached = cached || adaptor.getComponentInstance(container);
+                return cached;
+            }
+        });
+    };
+}
 
 module.exports = Cache;
