@@ -1,6 +1,7 @@
 "use strict";
 
 var Registry = require("./Registry");
+var ReflectionUtils = require("./ReflectionUtils");
 
 
 function Cache(registry) {
@@ -11,7 +12,7 @@ function Cache(registry) {
 Cache.prototype = Object.create(Registry.prototype);
 
 Cache.prototype.registerFactory = function (name, factory, dependencyNames) {
-    dependencyNames = dependencyNames || this.getDependencyNames(factory);
+    dependencyNames = dependencyNames || ReflectionUtils.getDependencyNames(factory);
     factory = this.createFactoryCache(factory);
 
     return this.registry.registerFactory(name, factory, dependencyNames);

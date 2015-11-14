@@ -118,7 +118,6 @@ describe("yaioc test", function () {
             expect("TargetFunction" in container.registry.factories).to.be.eql(true);
         });
 
-
     });
 
     describe("errors", function () {
@@ -270,26 +269,6 @@ describe("yaioc test", function () {
             container.get("intoThing");
 
             expect(actualContainer).to.be.eql(container);
-        });
-
-    });
-
-    describe("getDependencyNames", function () {
-
-        it("should return empty list if no dependencies found", function () {
-
-            var names = container.registry.getDependencyNames(function () {
-            });
-
-            expect(names).to.be.an("array");
-            expect(names.length).to.be.eql(0);
-        });
-
-        it("should return names of dependencies found", function () {
-
-            var names = container.registry.getDependencyNames(TargetFunction);
-
-            expect(names).to.be.eql(["dependencyOne", "dependencyTwo"]);
         });
 
     });
