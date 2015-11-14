@@ -243,6 +243,37 @@ describe("yaioc test", function () {
 
     });
 
+    describe("registerAdaptor", function () {
+
+        it("should resolve to result of given function", function () {
+            var result = {};
+            container.registerAdaptor("adaptorThing", function () {
+                return result;
+            });
+
+            var actualResult = container.get("adaptorThing");
+
+            expect(actualResult).to.be.eql(result);
+        });
+
+        it("should call adaptor with container", function () {
+            var actualContainer;
+            function IntoThing (adaptorThing) {
+                console.log(adaptorThing);
+            }
+            container.register(IntoThing);
+            container.registerAdaptor("adaptorThing", function (container) {
+                actualContainer = container;
+                return {};
+            });
+
+            container.get("intoThing");
+
+            expect(actualContainer).to.be.eql(container);
+        });
+
+    });
+
     describe("getDependencyNames", function () {
 
         it("should return empty list if no dependencies found", function () {

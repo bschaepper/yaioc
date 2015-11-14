@@ -44,6 +44,13 @@ Registry.prototype = {
         };
     },
 
+    registerAdaptor: function (name, adaptor) {
+        this.factories[name] = {
+            factory: adaptor,
+            dependencyNames: []
+        };
+    },
+
     isConstructor: function (functionToInspect, name) {
         return typeof functionToInspect === "function" && IS_PASCAL_CASE.test(name);
     },

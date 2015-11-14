@@ -42,6 +42,13 @@ Container.prototype = {
         return this.registry.registerFactory(name, factory, dependencyNames);
     },
 
+    registerAdaptor: function (name, adaptor) {
+        var container = this;
+        return this.registry.registerAdaptor(name, function () {
+            return adaptor(container);
+        });
+    },
+
     cache: function () {
         var cache = Object.create(Container.prototype);
         this.cache = function () { return cache; };
