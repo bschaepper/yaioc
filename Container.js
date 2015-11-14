@@ -11,7 +11,7 @@ var Cache = require("./Cache");
 class Container {
 
     constructor(wrappedContainer) {
-        this.adaptors = {};
+        this.adaptors = new Map();
         this.resolver = new Resolver(this, Container.getWrappedResolvers(wrappedContainer));
         Container.guardRegisterFunctions(this);
     }
@@ -51,7 +51,7 @@ class Container {
             adaptor = { getComponentInstance: adaptor };
         }
 
-        this.adaptors[name] = adaptor;
+        this.adaptors.set(name, adaptor);
     }
 
     cache() {
@@ -66,7 +66,7 @@ class Container {
     }
 
     lookup(name) {
-        return this.adaptors[name];
+        return this.adaptors.get(name);
     }
 
     static guardRegisterFunctions(container) {
