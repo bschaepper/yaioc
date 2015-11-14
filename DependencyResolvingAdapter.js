@@ -17,15 +17,22 @@ DependencyResolvingAdapter.prototype = {
     },
 
     resolveDependencies: function (container) {
-        var dependencies = this.dependencyNames.map(container.get, container);
-        dependencies.forEach(this.checkDependency.bind(this, this.dependencyNames, this.name));
+        var dependencies = this.lookupDependencies(container);
+        dependencies.forEach(this.checkDependency, this);
 
         return dependencies;
     },
 
-    checkDependency: function (dependencyNames, name, dependency, index) {
+    lookupDependencies: function (container) {
+        return this.dependencyNames.map(function (dependency) {
+            return container.get(dependency, this.name);
+        }, this);
+    },
+
+    checkDependency: function (dependency, index) {
         if (!dependency) {
-            throw new Error("Could not satisfy dependency '" + dependencyNames[index] + "' required by '" + name + "'");
+            var dependencyName = this.dependencyNames[index];
+            throw new Error("Could not satisfy dependency '" + dependencyName + "' required by '" + this.name + "'");
         }
     }
 

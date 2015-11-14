@@ -271,6 +271,34 @@ describe("yaioc test", function () {
             expect(actualContainer).to.be.eql(container);
         });
 
+        it("should call adaptor with insertion point name", function () {
+            var actualInto;
+            function IntoThing (adaptorThing) {
+                console.log(adaptorThing);
+            }
+            container.register(IntoThing);
+            container.registerAdaptor("adaptorThing", function (container, into) {
+                actualInto = into;
+                return {};
+            });
+
+            container.get("intoThing");
+
+            expect(actualInto).to.be.eql(IntoThing.name);
+        });
+
+        it("should call adaptor with insertion point name undefined for top level get", function () {
+            var actualInto;
+            container.registerAdaptor("adaptorThing", function (container, into) {
+                actualInto = into;
+                return {};
+            });
+
+            container.get("adaptorThing");
+
+            expect(actualInto).to.be.eql(void 0);
+        });
+
     });
 
     describe("ease of use", function () {

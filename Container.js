@@ -62,8 +62,8 @@ Container.prototype = {
         return cache;
     },
 
-    get: function (name) {
-        return this.resolver.get(name);
+    get: function (name, target) {
+        return this.resolver.get(name, target);
     },
 
     lookup: function (name) {

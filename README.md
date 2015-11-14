@@ -114,6 +114,18 @@ var foo = container.get("foo");
 assert(foo instanceof Foo);
 ````
 
+Additionally an adaptor will get passed the name of its target component:
+
+```javascript
+var container = yaioc.container();
+container.register(function NeedsFoo(foo) {});
+container.registerAdaptor("foo", function (container, target) {
+    assert(target === "NeedsFoo");
+});
+
+var foo = container.get("foo");
+````
+
 ### Caching
 
 If you want to have a single instance of a component, use caching:
