@@ -1,6 +1,6 @@
 {
   "name": "yaioc",
-  "version": "1.5.1",
+  "version": "1.6.0",
   "description": "Yet Another IOC-Container for Node.js",
   "main": "yaioc.js",
   "scripts": {
@@ -14,9 +14,9 @@
     "Node.js",
     "IOC",
     "Inversion of Control",
-	"DI",
-	"Dependency Injection",
-	"IOC-Container"	
+    "DI",
+    "Dependency Injection",
+    "IOC-Container"
   ],
   "author": "Bruno Schäpper",
   "license": "MIT",
