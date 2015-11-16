@@ -1,8 +1,10 @@
 "use strict";
 
 function Cache(container) {
+	
+	var cache = this;
     this.cache = function () {
-        return this;
+        return cache;
     };
 
     this.registerAdaptor = function (name, adaptor) {
@@ -18,6 +20,7 @@ function Cache(container) {
             }
         });
     };
+	
 }
 
 module.exports = Cache;
