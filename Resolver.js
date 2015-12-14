@@ -13,6 +13,14 @@ class Resolver {
     }
 
     resolve(name, target) {
+        var adaptor = this.lookup(name);
+
+        if (adaptor) {
+            return adaptor.getComponentInstance(this.container, target);
+        }
+    }
+
+    lookup(name) {
         var adaptor = this.container.lookup(name);
 
         if (!adaptor) {
@@ -20,9 +28,11 @@ class Resolver {
             adaptor = this.container.lookup(name);
         }
 
-        if (adaptor) {
-            return adaptor.getComponentInstance(this.container, target);
-        }
+        return adaptor;
+    }
+
+    lookupDeep(name) {
+        return this.lookup(name) || this.lookupInWrappedResolver(name);
     }
 
     toPascalCase(name) {
@@ -30,10 +40,18 @@ class Resolver {
     }
 
     resolveInWrappedResolver(name, target) {
+        return this.visitWrappedResolvers((resolver) => resolver.get(name, target));
+    }
+
+    lookupInWrappedResolver(name) {
+        return this.visitWrappedResolvers((resolver) => resolver.lookup(name));
+    }
+
+    visitWrappedResolvers(callback) {
         var found;
 
         this.wrappedResolvers.some((resolver) => {
-            found = resolver.get(name, target);
+            found = callback(resolver);
             return found;
         });
 

@@ -3,7 +3,7 @@
 var chai = require("chai");
 var expect = chai.expect;
 
-var yaioc = require("../yaioc.js");
+var yaioc = require("../yaioc");
 
 var TargetFunction = require("./TestMocks").TargetFunction;
 var TargetClass = require("./TestMocks").TargetClass;

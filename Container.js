@@ -6,6 +6,7 @@ var ValueAdapter = require("./ValueAdapter");
 var DependencyResolvingAdapter = require("./DependencyResolvingAdapter");
 var ConstructorAdapter = require("./ConstructorAdapter");
 var Cache = require("./Cache");
+var DependencyGraph = require("./DependencyGraph");
 
 
 class Container {
@@ -100,6 +101,20 @@ class Container {
         }
     }
 
+    getDependencyGraph(dependencyName) {
+        var dependency = this.resolver.lookupDeep(dependencyName);
+
+        if (!dependency) {
+            throw new Error("no component with given name '" + dependencyName + "' was found");
+        }
+
+        var node = { name: dependencyName };
+        if (dependency && dependency.dependencyNames) {
+            node.dependencies = dependency.dependencyNames.map(this.getDependencyGraph, this);
+        }
+
+        return new DependencyGraph(node);
+    }
 }
 
 module.exports = Container;
