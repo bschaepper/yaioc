@@ -22,7 +22,7 @@ describe("Dependency Graph Test", function () {
         container.register("bar", {});
     });
 
-    describe("getDependencyGrahp", function () {
+    describe("getDependencyGraph", function () {
 
         it("should get dependency graph", function () {
 
@@ -82,6 +82,24 @@ describe("Dependency Graph Test", function () {
                 "│  └─ buzz",
                 "└─ dependencyThree"
             ].join("\n"));
+        });
+
+        it("should throw if component with given name was not found", function () {
+            var error = "no component with given name 'nothing' was found";
+
+            var getOperation = container.getDependencyGraph.bind(container, "nothing");
+
+            expect(getOperation).to.throw(error);
+        });
+
+        it("should throw if there is a circular dependency", function () {
+            var error = "circular reference detected: a -> b -> a";
+            container.registerFactory("a", () => {}, ["b"]);
+            container.registerFactory("b", () => {}, ["a"]);
+
+            var getOperation = container.getDependencyGraph.bind(container, "a");
+
+            expect(getOperation).to.throw(error);
         });
 
     });
