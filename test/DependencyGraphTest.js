@@ -5,6 +5,7 @@ var expect = chai.expect;
 
 var yaioc = require("../yaioc");
 var DependencyGraph = require("../DependencyGraph");
+var DependencyGraphPrinter = require("../DependencyGraphPrinter");
 
 var TargetFunction = require("./TestMocks").TargetFunction;
 
@@ -53,7 +54,7 @@ describe("Dependency Graph Test", function () {
         });
 
         it("should draw deep dependency graph", function () {
-            var graph = new DependencyGraph({
+            var graph = new DependencyGraphPrinter({
                 name: "TargetFunction",
                 dependencies: [
                     {

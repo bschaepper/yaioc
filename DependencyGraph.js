@@ -1,52 +1,65 @@
 "use strict";
 
+var DependencyGraphPrinter = require("./DependencyGraphPrinter");
+
+
 class DependencyGraph {
 
-    constructor(root) {
-        this.name = root.name;
-        this.dependencies = root.dependencies;
+    constructor(resolver, dependencyName) {
+        this.resolver = resolver;
+        this.stack = [];
+        Object.assign(this, this.getDependencyGraph(dependencyName));
+    }
+
+    getDependencyGraph(dependencyName) {
+        this.pushStack(dependencyName);
+        var dependency = this.lookup(dependencyName);
+        var node = this.createNode(dependency, dependencyName);
+        this.popStack();
+
+        return node;
+    }
+
+    pushStack(dependencyName) {
+        var stackIndex = this.stack.indexOf(dependencyName);
+        this.stack.push(dependencyName);
+
+        if (stackIndex !== -1) {
+            throw new Error("circular reference detected: " + this.getReferenceTrace(stackIndex));
+        }
+    }
+
+    getReferenceTrace(stackIndex) {
+        return this.stack.slice(stackIndex).join(" -> ");
+    }
+
+    popStack() {
+        return this.stack.pop();
+    }
+
+    lookup(dependencyName) {
+        var dependency = this.resolver.lookupDeep(dependencyName);
+
+        if (!dependency) {
+            throw new Error("no component with given name '" + dependencyName + "' was found");
+        }
+
+        return dependency;
+    }
+
+    createNode(dependency, dependencyName) {
+        var dependencyNames = dependency.dependencyNames || [];
+
+        return {
+            name: dependencyName,
+            dependencies: dependencyNames.map((name) => this.getDependencyGraph(name))
+        };
     }
 
     draw() {
-        var children = this.visit(this);
-        children.unshift(this.name);
-        return children.join("\n");
+        return new DependencyGraphPrinter(this).draw();
     }
 
-    visit(root) {
-        var dependencies = root.dependencies || [];
-        return this.flatten(dependencies.map((node, i) => {
-            var isLast = i === dependencies.length - 1;
-            return this.visitNode(node, isLast);
-        }));
-    }
-
-    flatten(array) {
-        var flattened = [];
-
-        array.forEach((dep) => {
-            if (Array.isArray(dep)) {
-                flattened = flattened.concat(dep);
-            } else {
-                flattened.push(dep);
-            }
-        });
-
-        return flattened;
-    }
-
-    visitNode(node, isLast) {
-        var dependencies = this.visit(node).map((s) => (isLast ? "  " : "│") + s);
-        var nodeString = this.formatNode(isLast, dependencies, node);
-        dependencies.unshift(nodeString);
-        return dependencies;
-    }
-
-    formatNode(isLast, dependencies, node) {
-        var nodePrefix = isLast ? "└" : "├";
-        var childrenPrefix = dependencies.length ? "┬ " : "─ ";
-        return nodePrefix + childrenPrefix + node.name;
-    }
 }
 
 module.exports = DependencyGraph;

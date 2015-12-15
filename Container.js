@@ -101,37 +101,8 @@ class Container {
         }
     }
 
-    getDependencyGraph(dependencyName, stack) {
-        return runInStack(() => {
-            var dependency = this.resolver.lookupDeep(dependencyName);
-
-            if (!dependency) {
-                throw new Error("no component with given name '" + dependencyName + "' was found");
-            }
-
-            var dependencyNames = dependency.dependencyNames || [];
-
-            return new DependencyGraph({
-                name: dependencyName,
-                dependencies: dependencyNames.map((name) => this.getDependencyGraph(name, stack))
-            });
-        });
-
-        function runInStack(callback) {
-            stack = stack || [];
-            var stackIndex = stack.indexOf(dependencyName);
-            stack.push(dependencyName);
-
-            if (stackIndex !== -1) {
-                throw new Error("circular reference detected: " + stack.slice(stackIndex).join(" -> "));
-            }
-
-            var returnValue = callback();
-
-            stack.pop();
-
-            return returnValue;
-        }
+    getDependencyGraph(dependencyName) {
+        return new DependencyGraph(this.resolver, dependencyName);
     }
 
 }
