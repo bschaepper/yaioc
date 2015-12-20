@@ -170,3 +170,34 @@ container.register("bar", bar);
 assert(container.get("foo") === foo);
 assert(wrappedContainer.get("bar") === undefined);
 ````
+
+### Dependency Graph
+
+There is a method to give you an overview of all dependencies and transient dependencies of 
+any given component: 
+
+```javascript
+function Foo(baz) {}
+function Bar(foo, value) {}
+
+var container = yaioc.container();
+container.register(Foo);
+container.register(Bar);
+container.register("baz", "");
+container.register("value", "static value");
+
+var graph = container.getDependencyGraph("bar");
+console.log(graph.draw());
+````
+
+This will print a tree of dependencies:
+
+```
+bar
+├┬ foo
+│└─ baz
+└─ value
+```
+
+Additionally, there will be an error if either a dependency is not found, or a circular 
+reference is detected.
