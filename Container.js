@@ -7,6 +7,7 @@ var DependencyResolvingAdapter = require("./DependencyResolvingAdapter");
 var ConstructorAdapter = require("./ConstructorAdapter");
 var Cache = require("./Cache");
 var DependencyGraph = require("./DependencyGraph");
+var RegisterMethodsGuard = require("./RegisterMethodsGuard");
 
 
 class Container {
@@ -14,7 +15,7 @@ class Container {
     constructor(wrappedContainer) {
         this.adaptors = new Map();
         this.resolver = new Resolver(this, Container.getWrappedResolvers(wrappedContainer));
-        Container.guardRegisterFunctions(this);
+        RegisterMethodsGuard.guard(this);
     }
 
     static getWrappedResolvers(wrappedContainer) {
@@ -68,37 +69,6 @@ class Container {
 
     lookup(name) {
         return this.adaptors.get(name);
-    }
-
-    static guardRegisterFunctions(container) {
-        Object.getOwnPropertyNames(Object.getPrototypeOf(container))
-            .filter((methodName) => methodName.indexOf("register") === 0)
-            .forEach((methodName) => {
-                container[methodName] = addPreconditionsCheck(container[methodName]);
-            });
-
-        function addPreconditionsCheck(method) {
-            return function () {
-                return method.apply(this, arrangeAndCheckArguments(arguments));
-            };
-        }
-
-        function arrangeAndCheckArguments(args) {
-            args = Array.prototype.slice.call(args);
-            checkName(args[0]);
-
-            if (typeof args[0] === "function") {
-                args.unshift(args[0].name);
-            }
-
-            return args;
-        }
-
-        function checkName(name) {
-            if (!name || typeof name !== "string" && !name.name) {
-                throw new Error("no name provided for dependency");
-            }
-        }
     }
 
     getDependencyGraph(dependencyName) {

@@ -13,25 +13,15 @@ class DependencyGraphPrinter {
     }
 
     visit(root) {
-        var dependencies = root.dependencies || [];
-        return this.flatten(dependencies.map((node, i) => {
-            var isLast = i === dependencies.length - 1;
-            return this.visitNode(node, isLast);
-        }));
+        var nodes = root.dependencies || [];
+        return this.visitNodes(nodes).reduce((a, b) => a.concat(b), []);
     }
 
-    flatten(array) {
-        var flattened = [];
-
-        array.forEach((dep) => {
-            if (Array.isArray(dep)) {
-                flattened = flattened.concat(dep);
-            } else {
-                flattened.push(dep);
-            }
+    visitNodes(dependencies) {
+        return dependencies.map((node, i) => {
+            var isLast = i === dependencies.length - 1;
+            return this.visitNode(node, isLast);
         });
-
-        return flattened;
     }
 
     visitNode(node, isLast) {

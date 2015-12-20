@@ -1,18 +1,16 @@
 "use strict";
 
 function Cache(container) {
-    this.cache = function () {
-        return this;
-    };
+    this.cache = () => this;
 
-    this.registerAdaptor = function (name, adaptor) {
+    this.registerAdaptor = (name, adaptor) => {
         if (typeof adaptor === "function") {
             adaptor = { getComponentInstance: adaptor };
         }
 
         var cached;
         return container.registerAdaptor(name, {
-            getComponentInstance: function (container) {
+            getComponentInstance: (container) => {
                 cached = cached || adaptor.getComponentInstance(container);
                 return cached;
             }
