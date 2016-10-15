@@ -35,19 +35,19 @@ class Container {
             this.registerConstructor(Resolver.toLowerCamelCase(name), object);
         }
 
-        return this.registerValue(name, object);
+        this.registerValue(name, object);
     }
 
     registerConstructor(name, constructorFunction, dependencyNames) {
-        return this.registerAdaptor(name, new ConstructorAdapter(name, constructorFunction, dependencyNames));
+        this.registerAdaptor(name, new ConstructorAdapter(name, constructorFunction, dependencyNames));
     }
 
     registerValue(name, object) {
-        return this.registerAdaptor(name, new ValueAdapter(object));
+        this.registerAdaptor(name, new ValueAdapter(object));
     }
 
     registerFactory(name, factory, dependencyNames) {
-        return this.registerAdaptor(name, new DependencyResolvingAdapter(name, factory, dependencyNames));
+        this.registerAdaptor(name, new DependencyResolvingAdapter(name, factory, dependencyNames));
     }
 
     registerAdaptor(name, adaptor) {
