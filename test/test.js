@@ -42,10 +42,9 @@ describe("yaioc test", function () {
             container.register("dependencyOne", dependencyOne);
             var dependencyTwo = {};
             container.register("dependencyTwo", dependencyTwo);
-
             container.registerConstructor("TargetFunction", TargetFunction);
 
-            var instance = container.get("TargetFunction");
+            var instance = container.get("targetFunction");
 
             expect(instance.args.length).to.be.eql(2);
             expect(instance.dependencyOne).to.be.eql(dependencyOne);
@@ -58,7 +57,7 @@ describe("yaioc test", function () {
             container.register("dependencyTwo", {});
             container.register("TargetFunction", TargetFunction);
 
-            var instance = container.get("TargetFunction");
+            var instance = container.get("targetFunction");
 
             expect(instance.args.length).to.be.eql(2);
             expect(instance).to.be.instanceof(TargetFunction);
@@ -69,10 +68,9 @@ describe("yaioc test", function () {
             container.register("dependencyOne", dependencyOne);
             var dependencyTwo = {};
             container.register("dependencyTwo", dependencyTwo);
-
             container.registerConstructor("TargetClass", TargetClass);
 
-            var instance = container.get("TargetClass");
+            var instance = container.get("targetClass");
 
             expect(instance.args.length).to.be.eql(2);
             expect(instance.dependencyOne).to.be.eql(dependencyOne);
@@ -85,7 +83,7 @@ describe("yaioc test", function () {
             container.register("dependencyTwo", {});
             container.register("TargetClass", TargetClass);
 
-            var instance = container.get("TargetClass");
+            var instance = container.get("targetClass");
 
             expect(instance.args.length).to.be.eql(2);
             expect(instance).to.be.instanceof(TargetClass);
@@ -97,9 +95,20 @@ describe("yaioc test", function () {
             container.register("dependencyTwo", {});
             container.register("TargetClass", EmptyClass);
 
-            var instance = container.get("TargetClass");
+            var instance = container.get("targetClass");
 
             expect(instance).to.be.instanceof(EmptyClass);
+        });
+
+        it("should not instantiate classes which is resolved with upper camel case name", function () {
+            var EmptyClass = class {};
+            container.register("dependencyOne", {});
+            container.register("dependencyTwo", {});
+            container.register("TargetClass", EmptyClass);
+
+            var resolved = container.get("TargetClass");
+
+            expect(resolved).to.be.equal(EmptyClass);
         });
 
         it("should resolve types which end in upper case", function () {
@@ -146,7 +155,7 @@ describe("yaioc test", function () {
 
             var action = container.get.bind(container, "targetFunction");
 
-            expect(action).to.throw(/TargetFunction/);
+            expect(action).to.throw(/TargetFunction/i);
         });
 
         it("should throw if no name is present and cannot be resolved", function () {
@@ -166,7 +175,7 @@ describe("yaioc test", function () {
             container.register(Dependency);
             container.register(Target);
 
-            var targetInstance = container.get("Target");
+            var targetInstance = container.get("target");
 
             expect(targetInstance.dependency).to.be.instanceof(Dependency);
         });
@@ -316,7 +325,7 @@ describe("yaioc test", function () {
 
             container.get("intoThing");
 
-            expect(actualInto).to.be.eql(IntoThing.name);
+            expect(actualInto).to.be.eql("intoThing");
         });
 
         it("should call adaptor with insertion point name undefined for top level get", function () {

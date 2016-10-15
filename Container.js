@@ -31,9 +31,11 @@ class Container {
     }
 
     register(name, object) {
-        return ReflectionUtils.isConstructor(object, name) ?
-            this.registerConstructor(name, object) :
-            this.registerValue(name, object);
+        if (ReflectionUtils.isConstructor(object, name)) {
+            this.registerConstructor(Resolver.toLowerCamelCase(name), object);
+        }
+
+        return this.registerValue(name, object);
     }
 
     registerConstructor(name, constructorFunction, dependencyNames) {

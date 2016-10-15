@@ -24,7 +24,7 @@ class Resolver {
         var adaptor = this.container.lookup(name);
 
         if (!adaptor) {
-            name = this.toPascalCase(name);
+            name = Resolver.toUpperCamelCase(name);
             adaptor = this.container.lookup(name);
         }
 
@@ -35,8 +35,12 @@ class Resolver {
         return this.lookup(name) || this.lookupInWrappedResolver(name);
     }
 
-    toPascalCase(name) {
+    static toUpperCamelCase(name) {
         return name[0].toUpperCase() + name.substring(1);
+    }
+
+    static toLowerCamelCase(name) {
+        return name[0].toLowerCase() + name.substring(1);
     }
 
     resolveInWrappedResolver(name, target) {

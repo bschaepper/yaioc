@@ -27,10 +27,10 @@ describe("Dependency Graph Test", function () {
 
         it("should get dependency graph", function () {
 
-            var graph = container.getDependencyGraph("TargetFunction");
+            var graph = container.getDependencyGraph("targetFunction");
 
             expect(graph).to.be.an.instanceof(DependencyGraph);
-            expect(graph.name).to.be.eql("TargetFunction");
+            expect(graph.name).to.be.eql("targetFunction");
             expect(graph.dependencies.length).to.be.eql(2);
             expect(graph.dependencies[0].name).to.be.eql("dependencyOne");
             expect(graph.dependencies[0].dependencies.length).to.be.eql(2);
@@ -44,10 +44,10 @@ describe("Dependency Graph Test", function () {
             container.register("dependencyOne", {});
             container.register("dependencyTwo", {});
 
-            var graph = container.getDependencyGraph("TargetFunction");
+            var graph = container.getDependencyGraph("targetFunction");
 
             expect(graph.draw()).to.be.eql([
-                "TargetFunction",
+                "targetFunction",
                 "├─ dependencyOne",
                 "└─ dependencyTwo"
             ].join("\n"));
