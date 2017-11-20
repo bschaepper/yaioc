@@ -1,6 +1,6 @@
 {
   "name": "yaioc",
-  "version": "1.7.1",
+  "version": "1.8.0",
   "description": "Yet Another IOC-Container for Node.js",
   "main": "yaioc.js",
   "scripts": {
