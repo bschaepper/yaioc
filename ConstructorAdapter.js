@@ -1,7 +1,7 @@
 "use strict";
 
-var ReflectionUtils = require("./ReflectionUtils");
-var DependencyResolvingAdapter = require("./DependencyResolvingAdapter");
+const ReflectionUtils = require("./ReflectionUtils");
+const DependencyResolvingAdapter = require("./DependencyResolvingAdapter");
 
 
 class ConstructorAdapter extends DependencyResolvingAdapter {
@@ -9,7 +9,7 @@ class ConstructorAdapter extends DependencyResolvingAdapter {
     constructor(name, constructorFunction, dependencyNames) {
         dependencyNames = dependencyNames || ReflectionUtils.getDependencyNames(constructorFunction);
 
-        var factory = function () {
+        const factory = function () {
             return ReflectionUtils.createInstance(constructorFunction, arguments);
         };
 

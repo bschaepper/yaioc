@@ -153,6 +153,22 @@ assert(fooOne === fooTwo);
 ````
 
 
+### Component Scan
+
+A convenient way to register many components is the component scan facility.
+Internally this uses the [glob module](https://github.com/isaacs/node-glob), so many wildcard expressions are allowed.
+All matched files will be `require`d and `register`ed.
+
+```javascript
+var container = yaioc.container();
+var MyController = require("./ctrls/MyController");
+
+container.scanComponents(__dirname + "/**/*Controller.js");
+
+assert(container.get("MyController") === MyController);
+assert(container.get("myController") instanceof MyController);
+````
+
 
 ### Container hierarchies
 

@@ -13,7 +13,7 @@ class Resolver {
     }
 
     resolve(name, target) {
-        var adaptor = this.lookup(name);
+        const adaptor = this.lookup(name);
 
         if (adaptor) {
             return adaptor.getComponentInstance(this.container, target);
@@ -21,7 +21,7 @@ class Resolver {
     }
 
     lookup(name) {
-        var adaptor = this.container.lookup(name);
+        let adaptor = this.container.lookup(name);
 
         if (!adaptor) {
             name = Resolver.toUpperCamelCase(name);
@@ -52,7 +52,7 @@ class Resolver {
     }
 
     visitWrappedResolvers(callback) {
-        var found;
+        let found;
 
         this.wrappedResolvers.some((resolver) => {
             found = callback(resolver);

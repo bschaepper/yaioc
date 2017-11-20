@@ -8,7 +8,7 @@ function Cache(container) {
             adaptor = { getComponentInstance: adaptor };
         }
 
-        var cached;
+        let cached;
         return container.registerAdaptor(name, {
             getComponentInstance: (container) => {
                 cached = cached || adaptor.getComponentInstance(container);

@@ -1,13 +1,14 @@
 "use strict";
 
-var Resolver = require("./Resolver");
-var ReflectionUtils = require("./ReflectionUtils");
-var ValueAdapter = require("./ValueAdapter");
-var DependencyResolvingAdapter = require("./DependencyResolvingAdapter");
-var ConstructorAdapter = require("./ConstructorAdapter");
-var Cache = require("./Cache");
-var DependencyGraph = require("./DependencyGraph");
-var RegisterMethodsGuard = require("./RegisterMethodsGuard");
+const glob = require("glob");
+const Resolver = require("./Resolver");
+const ReflectionUtils = require("./ReflectionUtils");
+const ValueAdapter = require("./ValueAdapter");
+const DependencyResolvingAdapter = require("./DependencyResolvingAdapter");
+const ConstructorAdapter = require("./ConstructorAdapter");
+const Cache = require("./Cache");
+const DependencyGraph = require("./DependencyGraph");
+const RegisterMethodsGuard = require("./RegisterMethodsGuard");
 
 
 class Container {
@@ -52,14 +53,14 @@ class Container {
 
     registerAdaptor(name, adaptor) {
         if (typeof adaptor === "function") {
-            adaptor = { getComponentInstance: adaptor };
+            adaptor = {getComponentInstance: adaptor};
         }
 
         this.adaptors.set(name, adaptor);
     }
 
     cache() {
-        var container = new Container(this);
+        const container = new Container(this);
         Cache.call(container, this);
         this.cache = container.cache;
         return container;
@@ -77,6 +78,24 @@ class Container {
         return new DependencyGraph(this.resolver, dependencyName);
     }
 
+    scanComponents(path) {
+        for (const file of glob.sync(path)) {
+            const component = require(file);
+            const name = Container.getComponentName(component, file);
+
+            this.register(name, component);
+        }
+    }
+
+    static getComponentName(component, file) {
+        if (component.name) {
+            return component.name;
+        }
+
+        const name = file.split("/").pop().split(".");
+        name.pop();
+        return name.join(".");
+    }
 }
 
 module.exports = Container;

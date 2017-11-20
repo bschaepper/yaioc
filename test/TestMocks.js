@@ -18,6 +18,6 @@ class TargetClass {
 }
 
 module.exports = {
-    TargetFunction: TargetFunction,
-    TargetClass: TargetClass
+    TargetFunction,
+    TargetClass
 };

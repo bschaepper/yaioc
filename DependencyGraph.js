@@ -1,6 +1,6 @@
 "use strict";
 
-var DependencyGraphPrinter = require("./DependencyGraphPrinter");
+const DependencyGraphPrinter = require("./DependencyGraphPrinter");
 
 
 class DependencyGraph {
@@ -13,15 +13,15 @@ class DependencyGraph {
 
     getDependencyGraph(dependencyName) {
         this.pushStack(dependencyName);
-        var dependency = this.lookup(dependencyName);
-        var node = this.createNode(dependency, dependencyName);
+        const dependency = this.lookup(dependencyName);
+        const node = this.createNode(dependency, dependencyName);
         this.popStack();
 
         return node;
     }
 
     pushStack(dependencyName) {
-        var stackIndex = this.stack.indexOf(dependencyName);
+        const stackIndex = this.stack.indexOf(dependencyName);
         this.stack.push(dependencyName);
 
         if (stackIndex !== -1) {
@@ -38,7 +38,7 @@ class DependencyGraph {
     }
 
     lookup(dependencyName) {
-        var dependency = this.resolver.lookupDeep(dependencyName);
+        const dependency = this.resolver.lookupDeep(dependencyName);
 
         if (!dependency) {
             throw new Error("no component with given name '" + dependencyName + "' was found");
@@ -48,7 +48,7 @@ class DependencyGraph {
     }
 
     createNode(dependency, dependencyName) {
-        var dependencyNames = dependency.dependencyNames || [];
+        const dependencyNames = dependency.dependencyNames || [];
 
         return {
             name: dependencyName,

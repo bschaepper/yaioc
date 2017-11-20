@@ -11,17 +11,16 @@ class RegisterMethodsGuard {
 
     static getRegisterMethods(container) {
         return Object.getOwnPropertyNames(Object.getPrototypeOf(container))
-            .filter((methodName) => methodName.indexOf("register") === 0);
+            .filter((methodName) => methodName.startsWith("register"));
     }
 
     static addPreconditionsCheck(method) {
-        return function () {
-            return method.apply(this, RegisterMethodsGuard.arrangeAndCheckArguments(arguments));
+        return function (...args) {
+            return method.apply(this, RegisterMethodsGuard.arrangeAndCheckArguments(args));
         };
     }
 
     static arrangeAndCheckArguments(args) {
-        args = Array.prototype.slice.call(args);
         RegisterMethodsGuard.checkName(args[0]);
 
         if (typeof args[0] === "function") {

@@ -1,9 +1,9 @@
 "use strict";
 
-var Container = require("./Container");
-var defaultContainer;
+const Container = require("./Container");
 
 
+let defaultContainer;
 function yaioc() {
     if (!defaultContainer) {
         defaultContainer = new Container();
