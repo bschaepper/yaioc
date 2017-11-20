@@ -1,13 +1,13 @@
 "use strict";
 
-var Resolver = require("./Resolver");
-var ReflectionUtils = require("./ReflectionUtils");
-var ValueAdapter = require("./ValueAdapter");
-var DependencyResolvingAdapter = require("./DependencyResolvingAdapter");
-var ConstructorAdapter = require("./ConstructorAdapter");
-var Cache = require("./Cache");
-var DependencyGraph = require("./DependencyGraph");
-var RegisterMethodsGuard = require("./RegisterMethodsGuard");
+const Resolver = require("./Resolver");
+const ReflectionUtils = require("./ReflectionUtils");
+const ValueAdapter = require("./ValueAdapter");
+const DependencyResolvingAdapter = require("./DependencyResolvingAdapter");
+const ConstructorAdapter = require("./ConstructorAdapter");
+const Cache = require("./Cache");
+const DependencyGraph = require("./DependencyGraph");
+const RegisterMethodsGuard = require("./RegisterMethodsGuard");
 
 
 class Container {
@@ -59,7 +59,7 @@ class Container {
     }
 
     cache() {
-        var container = new Container(this);
+        const container = new Container(this);
         Cache.call(container, this);
         this.cache = container.cache;
         return container;

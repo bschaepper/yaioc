@@ -15,13 +15,12 @@ class RegisterMethodsGuard {
     }
 
     static addPreconditionsCheck(method) {
-        return function () {
-            return method.apply(this, RegisterMethodsGuard.arrangeAndCheckArguments(arguments));
+        return function (...args) {
+            return method.apply(this, RegisterMethodsGuard.arrangeAndCheckArguments(args));
         };
     }
 
     static arrangeAndCheckArguments(args) {
-        args = Array.prototype.slice.call(args);
         RegisterMethodsGuard.checkName(args[0]);
 
         if (typeof args[0] === "function") {

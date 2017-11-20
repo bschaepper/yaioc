@@ -1,20 +1,20 @@
 "use strict";
 
-var chai = require("chai");
-var expect = chai.expect;
+const chai = require("chai");
+const expect = chai.expect;
 
-var yaioc = require("../yaioc");
-var DependencyGraph = require("../DependencyGraph");
-var DependencyGraphPrinter = require("../DependencyGraphPrinter");
+const yaioc = require("../yaioc");
+const DependencyGraph = require("../DependencyGraph");
+const DependencyGraphPrinter = require("../DependencyGraphPrinter");
 
-var TargetFunction = require("./TestMocks").TargetFunction;
+const TargetFunction = require("./TestMocks").TargetFunction;
 
 
-describe("Dependency Graph Test", function () {
+describe("Dependency Graph Test", () => {
 
-    var container;
+    let container;
 
-    beforeEach(function () {
+    beforeEach(() => {
         container = yaioc.container();
         container.register(TargetFunction);
         container.registerAdaptor("dependencyOne", { dependencyNames: ["foo", "bar"] });
@@ -23,11 +23,11 @@ describe("Dependency Graph Test", function () {
         container.register("bar", {});
     });
 
-    describe("getDependencyGraph", function () {
+    describe("getDependencyGraph", () => {
 
-        it("should get dependency graph", function () {
+        it("should get dependency graph", () => {
 
-            var graph = container.getDependencyGraph("targetFunction");
+            const graph = container.getDependencyGraph("targetFunction");
 
             expect(graph).to.be.an.instanceof(DependencyGraph);
             expect(graph.name).to.be.eql("targetFunction");
@@ -39,12 +39,12 @@ describe("Dependency Graph Test", function () {
             expect(graph.dependencies[1].name).to.be.eql("dependencyTwo");
         });
 
-        it("should draw dependency graph", function () {
+        it("should draw dependency graph", () => {
             container.register(TargetFunction);
             container.register("dependencyOne", {});
             container.register("dependencyTwo", {});
 
-            var graph = container.getDependencyGraph("targetFunction");
+            const graph = container.getDependencyGraph("targetFunction");
 
             expect(graph.draw()).to.be.eql([
                 "targetFunction",
@@ -53,8 +53,8 @@ describe("Dependency Graph Test", function () {
             ].join("\n"));
         });
 
-        it("should draw deep dependency graph", function () {
-            var graph = new DependencyGraphPrinter({
+        it("should draw deep dependency graph", () => {
+            const graph = new DependencyGraphPrinter({
                 name: "TargetFunction",
                 dependencies: [
                     {
@@ -85,20 +85,20 @@ describe("Dependency Graph Test", function () {
             ].join("\n"));
         });
 
-        it("should throw if component with given name was not found", function () {
-            var error = "no component with given name 'nothing' was found";
+        it("should throw if component with given name was not found", () => {
+            const error = "no component with given name 'nothing' was found";
 
-            var getOperation = container.getDependencyGraph.bind(container, "nothing");
+            const getOperation = container.getDependencyGraph.bind(container, "nothing");
 
             expect(getOperation).to.throw(error);
         });
 
-        it("should throw if there is a circular dependency", function () {
-            var error = "circular reference detected: a -> b -> a";
+        it("should throw if there is a circular dependency", () => {
+            const error = "circular reference detected: a -> b -> a";
             container.registerFactory("a", () => {}, ["b"]);
             container.registerFactory("b", () => {}, ["a"]);
 
-            var getOperation = container.getDependencyGraph.bind(container, "a");
+            const getOperation = container.getDependencyGraph.bind(container, "a");
 
             expect(getOperation).to.throw(error);
         });

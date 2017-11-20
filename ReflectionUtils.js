@@ -1,8 +1,8 @@
 "use strict";
 
-var ARGUMENT_NAMES = /([^\s,]+)/g;
-var IS_PASCAL_CASE = /^[A-Z][a-zA-Z]*$/;
-var STRIP_COMMENTS = /((\/\/.*$)|(\/\*[\s\S]*?\*\/))/mg;
+const ARGUMENT_NAMES = /([^\s,]+)/g;
+const IS_PASCAL_CASE = /^[A-Z][a-zA-Z0-9]*$/;
+const STRIP_COMMENTS = /((\/\/.*$)|(\/\*[\s\S]*?\*\/))/mg;
 
 
 class ReflectionUtils {
@@ -13,13 +13,13 @@ class ReflectionUtils {
 
     static getDependencyNames(targetFunction) {
         // based on http://stackoverflow.com/a/9924463/1551204
-        var source = ReflectionUtils.getConstructorSource(targetFunction);
-        var argumentNames = source.slice(source.indexOf("(") + 1, source.indexOf(")")).match(ARGUMENT_NAMES);
+        const source = ReflectionUtils.getConstructorSource(targetFunction);
+        const argumentNames = source.slice(source.indexOf("(") + 1, source.indexOf(")")).match(ARGUMENT_NAMES);
         return argumentNames || [];
     }
 
     static getConstructorSource(targetFunction) {
-        var source = targetFunction.toString().replace(STRIP_COMMENTS, "");
+        let source = targetFunction.toString().replace(STRIP_COMMENTS, "");
 
         if (source.indexOf("class") === 0) {
             source = ReflectionUtils.getClassConstructorSource(source);
@@ -29,12 +29,12 @@ class ReflectionUtils {
     }
 
     static getClassConstructorSource(source) {
-        var constructorIndex = source.indexOf("constructor");
+        const constructorIndex = source.indexOf("constructor");
         return constructorIndex === -1 ? "" : source.slice(constructorIndex);
     }
 
     static createInstance(constructor, argumentsList) {
-        var constructorArguments = [null].concat(Array.prototype.slice.call(argumentsList || []));
+        const constructorArguments = [null].concat(Array.prototype.slice.call(argumentsList || []));
         return new (Function.prototype.bind.apply(constructor, constructorArguments))();
     }
 

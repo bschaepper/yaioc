@@ -1,50 +1,50 @@
 "use strict";
 
-var chai = require("chai");
-var expect = chai.expect;
+const chai = require("chai");
+const expect = chai.expect;
 
-var yaioc = require("../yaioc");
+const yaioc = require("../yaioc");
 
-var TargetFunction = require("./TestMocks").TargetFunction;
-var TargetClass = require("./TestMocks").TargetClass;
+const TargetFunction = require("./TestMocks").TargetFunction;
+const TargetClass = require("./TestMocks").TargetClass;
 
 
-describe("yaioc test", function () {
+describe("yaioc test", () => {
 
-    var container;
+    let container;
 
-    beforeEach(function () {
+    beforeEach(() => {
         container = yaioc.container();
     });
 
-    describe("register and resolve", function () {
+    describe("register and resolve", () => {
 
-        it("should return simple value objects", function () {
-            var dependencyOne = {};
+        it("should return simple value objects", () => {
+            const dependencyOne = {};
             container.registerValue("dependencyOne", dependencyOne);
 
-            var resolved = container.get("dependencyOne");
+            const resolved = container.get("dependencyOne");
 
             expect(resolved).to.be.equal(dependencyOne);
         });
 
-        it("should return simple value objects registered via general method", function () {
-            var dependencyOne = {};
+        it("should return simple value objects registered via general method", () => {
+            const dependencyOne = {};
             container.register("dependencyOne", dependencyOne);
 
-            var resolved = container.get("dependencyOne");
+            const resolved = container.get("dependencyOne");
 
             expect(resolved).to.be.equal(dependencyOne);
         });
 
-        it("should instantiate object with dependencies", function () {
-            var dependencyOne = {};
+        it("should instantiate object with dependencies", () => {
+            const dependencyOne = {};
             container.register("dependencyOne", dependencyOne);
-            var dependencyTwo = {};
+            const dependencyTwo = {};
             container.register("dependencyTwo", dependencyTwo);
             container.registerConstructor("TargetFunction", TargetFunction);
 
-            var instance = container.get("targetFunction");
+            const instance = container.get("targetFunction");
 
             expect(instance.args.length).to.be.eql(2);
             expect(instance.dependencyOne).to.be.eql(dependencyOne);
@@ -52,25 +52,25 @@ describe("yaioc test", function () {
             expect(instance).to.be.instanceof(TargetFunction);
         });
 
-        it("should instantiate object with dependencies via general method", function () {
+        it("should instantiate object with dependencies via general method", () => {
             container.register("dependencyOne", {});
             container.register("dependencyTwo", {});
             container.register("TargetFunction", TargetFunction);
 
-            var instance = container.get("targetFunction");
+            const instance = container.get("targetFunction");
 
             expect(instance.args.length).to.be.eql(2);
             expect(instance).to.be.instanceof(TargetFunction);
         });
 
-        it("should instantiate classes with dependencies", function () {
-            var dependencyOne = {};
+        it("should instantiate classes with dependencies", () => {
+            const dependencyOne = {};
             container.register("dependencyOne", dependencyOne);
-            var dependencyTwo = {};
+            const dependencyTwo = {};
             container.register("dependencyTwo", dependencyTwo);
             container.registerConstructor("TargetClass", TargetClass);
 
-            var instance = container.get("targetClass");
+            const instance = container.get("targetClass");
 
             expect(instance.args.length).to.be.eql(2);
             expect(instance.dependencyOne).to.be.eql(dependencyOne);
@@ -78,49 +78,49 @@ describe("yaioc test", function () {
             expect(instance).to.be.instanceof(TargetClass);
         });
 
-        it("should instantiate classes with dependencies via general method", function () {
+        it("should instantiate classes with dependencies via general method", () => {
             container.register("dependencyOne", {});
             container.register("dependencyTwo", {});
             container.register("TargetClass", TargetClass);
 
-            var instance = container.get("targetClass");
+            const instance = container.get("targetClass");
 
             expect(instance.args.length).to.be.eql(2);
             expect(instance).to.be.instanceof(TargetClass);
         });
 
-        it("should instantiate classes with default (no) constructor", function () {
-            var EmptyClass = class {};
+        it("should instantiate classes with default (no) constructor", () => {
+            const EmptyClass = class {};
             container.register("dependencyOne", {});
             container.register("dependencyTwo", {});
             container.register("TargetClass", EmptyClass);
 
-            var instance = container.get("targetClass");
+            const instance = container.get("targetClass");
 
             expect(instance).to.be.instanceof(EmptyClass);
         });
 
-        it("should not instantiate classes which is resolved with upper camel case name", function () {
-            var EmptyClass = class {};
+        it("should not instantiate classes which is resolved with upper camel case name", () => {
+            const EmptyClass = class {};
             container.register("dependencyOne", {});
             container.register("dependencyTwo", {});
             container.register("TargetClass", EmptyClass);
 
-            var resolved = container.get("TargetClass");
+            const resolved = container.get("TargetClass");
 
             expect(resolved).to.be.equal(EmptyClass);
         });
 
-        it("should resolve types which end in upper case", function () {
+        it("should resolve types which end in upper case", () => {
             function TypeAB() { TargetFunction.call(this); }
 
             container.register(TypeAB);
 
-            var instance = container.get("typeAB");
+            const instance = container.get("typeAB");
             expect(instance).to.be.instanceof(TypeAB);
         });
 
-        it("should use name of function if present", function () {
+        it("should use name of function if present", () => {
 
             container.register(TargetFunction);
 
@@ -129,180 +129,180 @@ describe("yaioc test", function () {
 
     });
 
-    describe("errors", function () {
+    describe("errors", () => {
 
-        it("should throw if dependency cannot be resolved", function () {
-            var container = yaioc.container();
+        it("should throw if dependency cannot be resolved", () => {
+            const container = yaioc.container();
             container.register(TargetFunction);
 
-            var action = container.get.bind(container, "targetFunction");
+            const action = container.get.bind(container, "targetFunction");
 
             expect(action).to.throw(/Could not satisfy dependency/);
         });
 
-        it("should include name of missing dependency", function () {
-            var container = yaioc.container();
+        it("should include name of missing dependency", () => {
+            const container = yaioc.container();
             container.register(TargetFunction);
 
-            var action = container.get.bind(container, "targetFunction");
+            const action = container.get.bind(container, "targetFunction");
 
             expect(action).to.throw(/dependencyOne/);
         });
 
-        it("should include traget name of missing dependency", function () {
-            var container = yaioc.container();
+        it("should include traget name of missing dependency", () => {
+            const container = yaioc.container();
             container.register(TargetFunction);
 
-            var action = container.get.bind(container, "targetFunction");
+            const action = container.get.bind(container, "targetFunction");
 
             expect(action).to.throw(/TargetFunction/i);
         });
 
-        it("should throw if no name is present and cannot be resolved", function () {
+        it("should throw if no name is present and cannot be resolved", () => {
 
-            var callRegister = container.register.bind(container, {});
+            const callRegister = container.register.bind(container, {});
 
             expect(callRegister).to.throw(/no name provided for dependency/);
         });
 
     });
 
-    describe("get", function () {
+    describe("get", () => {
 
-        it("should instantiate registered constructor function as dependency", function () {
+        it("should instantiate registered constructor function as dependency", () => {
             function Dependency() {}
             function Target(dependency) { this.dependency = dependency; }
             container.register(Dependency);
             container.register(Target);
 
-            var targetInstance = container.get("target");
+            const targetInstance = container.get("target");
 
             expect(targetInstance.dependency).to.be.instanceof(Dependency);
         });
 
     });
 
-    describe("cache", function () {
+    describe("cache", () => {
 
-        it("should resolve to new instance on every call", function () {
+        it("should resolve to new instance on every call", () => {
             container.register("dependencyOne", {});
             container.register("dependencyTwo", {});
             container.register(TargetFunction);
 
-            var instanceA = container.get("targetFunction");
-            var instanceB = container.get("targetFunction");
+            const instanceA = container.get("targetFunction");
+            const instanceB = container.get("targetFunction");
 
             expect(instanceA).to.be.instanceof(TargetFunction);
             expect(instanceB).to.be.instanceof(TargetFunction);
             expect(instanceA === instanceB).to.be.eql(false);
         });
 
-        it("should resolve to same instance on every call, when registered in cache", function () {
+        it("should resolve to same instance on every call, when registered in cache", () => {
             container.register("dependencyOne", {});
             container.register("dependencyTwo", {});
             container.cache().register(TargetFunction);
 
-            var instanceA = container.get("targetFunction");
-            var instanceB = container.get("targetFunction");
+            const instanceA = container.get("targetFunction");
+            const instanceB = container.get("targetFunction");
 
             expect(instanceA).to.be.instanceof(TargetFunction);
             expect(instanceB).to.be.instanceof(TargetFunction);
             expect(instanceA === instanceB).to.be.eql(true);
         });
 
-        it("should forgive subsequent cache() calls and return same cache", function () {
-            var cachedContainer1 = container.cache();
+        it("should forgive subsequent cache() calls and return same cache", () => {
+            const cachedContainer1 = container.cache();
 
-            var cachedContainer2 = cachedContainer1.cache();
+            const cachedContainer2 = cachedContainer1.cache();
 
             expect(cachedContainer1 === cachedContainer2).to.be.eql(true);
         });
 
-        it("should allow short form of adaptor to be cached", function () {
-            container.cache().registerAdaptor("targetAdaptor", function () {
+        it("should allow short form of adaptor to be cached", () => {
+            container.cache().registerAdaptor("targetAdaptor", () => {
                 return {};
             });
 
-            var instanceA = container.get("targetAdaptor");
-            var instanceB = container.get("targetAdaptor");
+            const instanceA = container.get("targetAdaptor");
+            const instanceB = container.get("targetAdaptor");
 
             expect(instanceA === instanceB).to.be.eql(true);
         });
 
     });
 
-    describe("registerFactory", function () {
+    describe("registerFactory", () => {
 
-        it("should resolve to result of given function", function () {
-            var result = {};
-            container.registerFactory("factoryThing", function () {
+        it("should resolve to result of given function", () => {
+            const result = {};
+            container.registerFactory("factoryThing", () => {
                 return result;
             });
 
-            var actualResult = container.get("factoryThing");
+            const actualResult = container.get("factoryThing");
 
             expect(actualResult).to.be.eql(result);
         });
 
-        it("should resolve and provide dependencies of given function", function () {
-            var dependencyOne = {};
+        it("should resolve and provide dependencies of given function", () => {
+            const dependencyOne = {};
             container.register("dependencyOne", dependencyOne);
-            container.registerFactory("factoryThing", function (dependencyOne) {
+            container.registerFactory("factoryThing", (dependencyOne) => {
                 return dependencyOne;
             });
 
-            var actualResult = container.get("factoryThing");
+            const actualResult = container.get("factoryThing");
 
             expect(actualResult).to.be.equal(dependencyOne);
         });
 
-        it("should resolve and provide dependencies of given cached function", function () {
-            var dependencyOne = {};
+        it("should resolve and provide dependencies of given cached function", () => {
+            const dependencyOne = {};
             container.register("dependencyOne", dependencyOne);
-            container.cache().registerFactory("factoryThing", function (dependencyOne) {
+            container.cache().registerFactory("factoryThing", (dependencyOne) => {
                 return dependencyOne;
             });
 
-            var actualResult = container.get("factoryThing");
+            const actualResult = container.get("factoryThing");
 
             expect(actualResult).to.be.equal(dependencyOne);
         });
 
     });
 
-    describe("registerAdaptor", function () {
+    describe("registerAdaptor", () => {
 
-        it("should resolve to result of given function", function () {
-            var result = {};
-            container.registerAdaptor("adaptorThing", function () {
+        it("should resolve to result of given function", () => {
+            const result = {};
+            container.registerAdaptor("adaptorThing", () => {
                 return result;
             });
 
-            var actualResult = container.get("adaptorThing");
+            const actualResult = container.get("adaptorThing");
 
             expect(actualResult).to.be.eql(result);
         });
 
-        it("should resolve to result of given adaptor object", function () {
-            var result = {};
+        it("should resolve to result of given adaptor object", () => {
+            const result = {};
             container.registerAdaptor("adaptorThing", {
                 getComponentInstance: function () {
                     return result;
                 }
             });
 
-            var actualResult = container.get("adaptorThing");
+            const actualResult = container.get("adaptorThing");
 
             expect(actualResult).to.be.eql(result);
         });
 
-        it("should call adaptor with container", function () {
-            var actualContainer;
+        it("should call adaptor with container", () => {
+            let actualContainer;
             function IntoThing (adaptorThing) {
                 console.log(adaptorThing);
             }
             container.register(IntoThing);
-            container.registerAdaptor("adaptorThing", function (container) {
+            container.registerAdaptor("adaptorThing", (container) => {
                 actualContainer = container;
                 return {};
             });
@@ -312,13 +312,13 @@ describe("yaioc test", function () {
             expect(actualContainer).to.be.eql(container);
         });
 
-        it("should call adaptor with insertion point name", function () {
-            var actualInto;
+        it("should call adaptor with insertion point name", () => {
+            let actualInto;
             function IntoThing (adaptorThing) {
                 console.log(adaptorThing);
             }
             container.register(IntoThing);
-            container.registerAdaptor("adaptorThing", function (container, into) {
+            container.registerAdaptor("adaptorThing", (container, into) => {
                 actualInto = into;
                 return {};
             });
@@ -328,9 +328,9 @@ describe("yaioc test", function () {
             expect(actualInto).to.be.eql("intoThing");
         });
 
-        it("should call adaptor with insertion point name undefined for top level get", function () {
-            var actualInto;
-            container.registerAdaptor("adaptorThing", function (container, into) {
+        it("should call adaptor with insertion point name undefined for top level get", () => {
+            let actualInto;
+            container.registerAdaptor("adaptorThing", (container, into) => {
                 actualInto = into;
                 return {};
             });
@@ -342,71 +342,71 @@ describe("yaioc test", function () {
 
     });
 
-    describe("ease of use", function () {
+    describe("ease of use", () => {
 
-        it("yaioc() should return a Container instance", function () {
-            var container = yaioc();
+        it("yaioc() should return a Container instance", () => {
+            const container = yaioc();
 
             expect(container).to.be.instanceof(yaioc.Container);
         });
 
-        it("yaioc() should return always the same Container instance", function () {
-            var container1 = yaioc();
-            var container2 = yaioc();
+        it("yaioc() should return always the same Container instance", () => {
+            const container1 = yaioc();
+            const container2 = yaioc();
 
             expect(container1 === container2).to.be.eql(true);
         });
 
     });
 
-    describe("child containers", function () {
+    describe("child containers", () => {
 
-        it("should optionally take a container in constructor, which is used for dependency resolving", function () {
-            var wrappedContainer = yaioc.container();
-            var container = yaioc.container(wrappedContainer);
+        it("should optionally take a container in constructor, which is used for dependency resolving", () => {
+            const wrappedContainer = yaioc.container();
+            const container = yaioc.container(wrappedContainer);
 
-            var foo = {};
+            const foo = {};
             wrappedContainer.register("foo", foo);
 
-            var resolvedFoo = container.get("foo");
+            const resolvedFoo = container.get("foo");
 
             expect(resolvedFoo === foo).to.be.eql(true);
         });
 
-        it("should optionally take an array of child containers", function () {
-            var childContainers = [yaioc.container(), yaioc.container()];
-            var container = yaioc.container(childContainers);
+        it("should optionally take an array of child containers", () => {
+            const childContainers = [yaioc.container(), yaioc.container()];
+            const container = yaioc.container(childContainers);
 
-            var foos = [{}, {}];
+            const foos = [{}, {}];
             childContainers[0].register("foo0", foos[0]);
             childContainers[1].register("foo1", foos[1]);
 
-            var resolvedFoos = [container.get("foo0"), container.get("foo1")];
+            const resolvedFoos = [container.get("foo0"), container.get("foo1")];
 
             expect(resolvedFoos[0] === foos[0]).to.be.eql(true);
             expect(resolvedFoos[1] === foos[1]).to.be.eql(true);
         });
 
-        it("should not resolve dependencies in outer container", function () {
-            var wrappedContainer = yaioc.container();
-            var container = yaioc.container(wrappedContainer);
+        it("should not resolve dependencies in outer container", () => {
+            const wrappedContainer = yaioc.container();
+            const container = yaioc.container(wrappedContainer);
 
-            var foo = {};
+            const foo = {};
             container.register("foo", foo);
 
-            var resolvedFoo = wrappedContainer.get("foo");
+            const resolvedFoo = wrappedContainer.get("foo");
 
             expect(resolvedFoo).to.be.eql(void 0);
         });
 
-        it("should resolve constructors in wrapped container", function () {
-            var wrappedContainer = yaioc.container();
-            var container = yaioc.container(wrappedContainer);
+        it("should resolve constructors in wrapped container", () => {
+            const wrappedContainer = yaioc.container();
+            const container = yaioc.container(wrappedContainer);
             wrappedContainer.register(TargetFunction);
             wrappedContainer.register("dependencyOne", {});
             wrappedContainer.register("dependencyTwo", {});
 
-            var targetFunction = container.get("targetFunction");
+            const targetFunction = container.get("targetFunction");
 
             expect(targetFunction).to.be.a.instanceof(TargetFunction);
         });

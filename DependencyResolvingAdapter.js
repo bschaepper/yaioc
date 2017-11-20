@@ -1,6 +1,6 @@
 "use strict";
 
-var ReflectionUtils = require("./ReflectionUtils");
+const ReflectionUtils = require("./ReflectionUtils");
 
 
 class DependencyResolvingAdapter {
@@ -12,12 +12,12 @@ class DependencyResolvingAdapter {
     }
 
     getComponentInstance(container) {
-        var dependencies = this.resolveDependencies(container);
+        const dependencies = this.resolveDependencies(container);
         return this.factoryCallback.apply(null, dependencies);
     }
 
     resolveDependencies(container) {
-        var dependencies = this.lookupDependencies(container);
+        const dependencies = this.lookupDependencies(container);
         dependencies.forEach(this.checkDependency, this);
 
         return dependencies;
@@ -29,7 +29,7 @@ class DependencyResolvingAdapter {
 
     checkDependency(dependency, index) {
         if (!dependency) {
-            var dependencyName = this.dependencyNames[index];
+            const dependencyName = this.dependencyNames[index];
             throw new Error("Could not satisfy dependency '" + dependencyName + "' required by '" + this.name + "'");
         }
     }
