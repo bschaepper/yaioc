@@ -1,5 +1,6 @@
 "use strict";
 
+const glob = require("glob");
 const Resolver = require("./Resolver");
 const ReflectionUtils = require("./ReflectionUtils");
 const ValueAdapter = require("./ValueAdapter");
@@ -52,7 +53,7 @@ class Container {
 
     registerAdaptor(name, adaptor) {
         if (typeof adaptor === "function") {
-            adaptor = { getComponentInstance: adaptor };
+            adaptor = {getComponentInstance: adaptor};
         }
 
         this.adaptors.set(name, adaptor);
@@ -77,6 +78,24 @@ class Container {
         return new DependencyGraph(this.resolver, dependencyName);
     }
 
+    scanComponents(path) {
+        for (const file of glob.sync(path)) {
+            const component = require(file);
+            const name = Container.getComponentName(component, file);
+
+            this.register(name, component);
+        }
+    }
+
+    static getComponentName(component, file) {
+        if (component.name) {
+            return component.name;
+        }
+
+        const name = file.split("/").pop().split(".");
+        name.pop();
+        return name.join(".");
+    }
 }
 
 module.exports = Container;

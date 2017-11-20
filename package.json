@@ -38,5 +38,8 @@
     "mocha": "^4.0.1",
     "sinon": "^4.1.2",
     "sinon-chai": "^2.14.0"
+  },
+  "dependencies": {
+    "glob": "^7.1.2"
   }
 }

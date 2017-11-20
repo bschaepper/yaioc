@@ -11,7 +11,7 @@ class RegisterMethodsGuard {
 
     static getRegisterMethods(container) {
         return Object.getOwnPropertyNames(Object.getPrototypeOf(container))
-            .filter((methodName) => methodName.indexOf("register") === 0);
+            .filter((methodName) => methodName.startsWith("register"));
     }
 
     static addPreconditionsCheck(method) {

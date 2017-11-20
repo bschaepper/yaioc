@@ -127,6 +127,17 @@ describe("yaioc test", () => {
             expect(container.adaptors.has("TargetFunction")).to.be.eql(true);
         });
 
+        it("should instantiate registered constructor function as dependency", () => {
+            function Dependency() {}
+            function Target(dependency) { this.dependency = dependency; }
+            container.register(Dependency);
+            container.register(Target);
+
+            const targetInstance = container.get("target");
+
+            expect(targetInstance.dependency).to.be.instanceof(Dependency);
+        });
+
     });
 
     describe("errors", () => {
@@ -163,21 +174,6 @@ describe("yaioc test", () => {
             const callRegister = container.register.bind(container, {});
 
             expect(callRegister).to.throw(/no name provided for dependency/);
-        });
-
-    });
-
-    describe("get", () => {
-
-        it("should instantiate registered constructor function as dependency", () => {
-            function Dependency() {}
-            function Target(dependency) { this.dependency = dependency; }
-            container.register(Dependency);
-            container.register(Target);
-
-            const targetInstance = container.get("target");
-
-            expect(targetInstance.dependency).to.be.instanceof(Dependency);
         });
 
     });
@@ -409,6 +405,17 @@ describe("yaioc test", () => {
             const targetFunction = container.get("targetFunction");
 
             expect(targetFunction).to.be.a.instanceof(TargetFunction);
+        });
+
+    });
+
+    describe("component scan", () => {
+
+        it("should match components and add to container", () => {
+
+            container.scanComponents(__dirname + "/**/*Mocks.js");
+
+            expect(container.lookup("TestMocks")).to.be.an("object");
         });
 
     });
