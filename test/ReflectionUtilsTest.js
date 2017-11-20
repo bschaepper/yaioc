@@ -55,6 +55,21 @@ describe("Reflection Utils Test", () => {
 
         });
 
+        it("should return true for a pascal case function with number in name", () => {
+
+            const isConstructor = ReflectionUtils.isConstructor(TargetFunction, TargetFunction.name + "1");
+
+            expect(isConstructor).to.be.eql(true);
+        });
+
+        it("should return true for a class with number in name", () => {
+
+            const isConstructor = ReflectionUtils.isConstructor(TargetClass, TargetClass.name + "12");
+
+            expect(isConstructor).to.be.eql(true);
+
+        });
+
         it("should return false for a lower case function", () => {
 
             const isConstructor = ReflectionUtils.isConstructor(TargetFunction, "foo");
