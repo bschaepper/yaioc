@@ -183,6 +183,13 @@ describe("Yaioc Behaviors Tests", () => {
             expect(container.lookup("TestMocks")).to.be.an("object");
         });
 
+        it("should match components and add to container with cache behavior", () => {
+
+            container.cache().scanComponents(__dirname + "/**/*Mocks.js");
+
+            expect(container.lookup("TestMocks")).to.be.an("object");
+        });
+
     });
 
 });
