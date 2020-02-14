@@ -45,6 +45,8 @@ assert(bar.foo instanceof Foo);
 assert(bar.value === "static value");
 ````
 
+Of course, you can use more modern constructs like classes and ESModules too.
+
 ### Naming Conventions
 
 ```javascript
