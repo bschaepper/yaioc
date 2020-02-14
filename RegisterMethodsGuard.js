@@ -27,12 +27,26 @@ class RegisterMethodsGuard {
             args.unshift(args[0].name);
         }
 
-        return args;
+        return RegisterMethodsGuard.rearrangeEsModule(args) || args;
     }
 
     static checkName(name) {
-        if (!name || typeof name !== "string" && !name.name) {
+        if (!name || typeof name !== "string" && !name.name && !this.isEsModuleWithNamedDefaultExport(name)) {
             throw new Error("no name provided for dependency");
+        }
+    }
+
+    static isEsModuleWithNamedDefaultExport(candidate) {
+        return candidate && candidate.__esModule && candidate.default && candidate.default.name;
+    }
+
+    static rearrangeEsModule(args) {
+        if (RegisterMethodsGuard.isEsModuleWithNamedDefaultExport(args[0])) {
+            return [args[0].default.name, args[0].default];
+        }
+
+        if (RegisterMethodsGuard.isEsModuleWithNamedDefaultExport(args[1])) {
+            return [args[0], args[1].default];
         }
     }
 

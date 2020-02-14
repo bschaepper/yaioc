@@ -8,6 +8,8 @@ const yaioc = require("../yaioc");
 const TargetFunction = require("./TestMocks").TargetFunction;
 const TargetClass = require("./TestMocks").TargetClass;
 
+const makeEsModule = require("./TestMocks").makeEsModule;
+
 
 describe("Register and Resolve Tests", () => {
 
@@ -138,6 +140,32 @@ describe("Register and Resolve Tests", () => {
             container.register(Target);
 
             const targetInstance = container.get("target");
+
+            expect(targetInstance.dependency).to.be.instanceof(Dependency);
+        });
+
+    });
+
+    describe("register es modules", () => {
+
+        it("should register es modules", () => {
+            function Dependency() {}
+            function Target(dependency) { this.dependency = dependency; }
+            container.register(makeEsModule(Dependency));
+            container.register(makeEsModule(Target));
+
+            const targetInstance = container.get("target");
+
+            expect(targetInstance.dependency).to.be.instanceof(Dependency);
+        });
+
+        it("should register es modules with name", () => {
+            function Dependency() {}
+            function Target(aaDependency) { this.dependency = aaDependency; }
+            container.register("AaDependency", makeEsModule(Dependency));
+            container.register("AaTarget", makeEsModule(Target));
+
+            const targetInstance = container.get("aaTarget");
 
             expect(targetInstance.dependency).to.be.instanceof(Dependency);
         });

@@ -17,7 +17,16 @@ class TargetClass {
     }
 }
 
+function makeEsModule(defaultExport) {
+    return {
+        __esModule: true,
+        default: defaultExport
+    };
+}
+
 module.exports = {
     TargetFunction,
-    TargetClass
+    TargetClass,
+
+    makeEsModule
 };
