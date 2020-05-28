@@ -1,8 +1,8 @@
-"use strict";
 
 export interface IContainer {
 
     register<TYPE extends Function>(object: TYPE);
+    register<TYPE extends Function>(object: { default: TYPE });
     register<TYPE>(name: string, object: TYPE);
 
     registerConstructor<TYPE extends Function>(constructorFunction: { new(...args: any[]): TYPE }, dependencyNames: string[]);
@@ -10,7 +10,7 @@ export interface IContainer {
 
     registerValue<TYPE>(name: string, object: TYPE);
 
-    registerFactory<TYPE>(name: string, factory: (...args: any[]) => T, dependencyNames: string[]);
+    registerFactory<TYPE>(name: string, factory: (...args: any[]) => TYPE, dependencyNames: string[]);
 
     registerAdaptor<TYPE>(name: string, adaptor: TYPE);
 
@@ -20,4 +20,9 @@ export interface IContainer {
 
     scanComponents(path: string): void;
 
+}
+
+export interface IYaiocConstructor {
+    (): IContainer;
+    container(childContainer?: IContainer): IContainer;
 }
