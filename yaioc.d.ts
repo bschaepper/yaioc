@@ -26,3 +26,7 @@ export interface IYaiocConstructor {
     (): IContainer;
     container(childContainer?: IContainer): IContainer;
 }
+
+export interface IContainerAdaptor<T> {
+     getComponentInstance(conatiner: IContainer, target?: string): T
+}
