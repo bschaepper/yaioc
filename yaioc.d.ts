@@ -22,11 +22,19 @@ export interface IContainer {
 
 }
 
+interface IYaiocClassConstructor {
+    new(childContainer?: IContainer): IContainer
+}
+
 export interface IYaiocConstructor {
     (): IContainer;
     container(childContainer?: IContainer): IContainer;
+    Container: IYaiocClassConstructor;
 }
 
 export interface IContainerAdaptor<T> {
     getComponentInstance(conatiner: IContainer, target?: string): T
 }
+
+declare var defaultExport: IYaiocConstructor;
+export default defaultExport;
