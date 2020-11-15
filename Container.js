@@ -60,7 +60,8 @@ class Container {
     }
 
     cache() {
-        const container = new Container(this);
+        const InstanceClass = Object.getPrototypeOf(this).constructor;
+        const container = new InstanceClass(this);
         Cache.call(container, this);
         this.cache = container.cache;
         return container;
