@@ -101,6 +101,16 @@ describe("Yaioc Behaviors Tests", () => {
             expect(instanceA === instanceB).to.be.eql(true);
         });
 
+        it("returns same instance type after cache()", () => {
+            class ExtendedContainer extends yaioc.Container {}
+
+            const container = new ExtendedContainer();
+            const cachedContainer = container.cache();
+
+            expect(container).to.be.instanceof(ExtendedContainer);
+            expect(cachedContainer).to.be.instanceof(ExtendedContainer);
+        });
+
     });
 
     describe("ease of use", () => {
