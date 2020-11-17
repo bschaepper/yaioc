@@ -12,6 +12,16 @@ class Resolver {
         return this.resolve(name, target) || this.resolveInWrappedResolver(name, target);
     }
 
+    resolveRegisteredNames() {
+        const wrappedNames = [].concat(...this.wrappedResolvers.map((resolver) => resolver.resolveRegisteredNames()));
+        const uniqueNames =  [...new Set([
+            ...this.container.getRegisteredNames(),
+            ...wrappedNames
+        ])];
+
+        return uniqueNames;
+    }
+
     resolve(name, target) {
         const adaptor = this.lookup(name);
 

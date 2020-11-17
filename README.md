@@ -43,7 +43,7 @@ var bar = container.get("bar");
 assert(bar instanceof Bar);
 assert(bar.foo instanceof Foo);
 assert(bar.value === "static value");
-````
+```
 
 Of course, you can use more modern constructs like classes and ESModules too.
 
@@ -51,9 +51,9 @@ Of course, you can use more modern constructs like classes and ESModules too.
 
 ```javascript
 var FooBar = ...; // this refers to a Class/Constructor function named "FooBar"
-var fooBar = ...; // this refers to an instance of FooBar 
+var fooBar = ...; // this refers to an instance of FooBar
 function SomeConstructor(fooBar) { ... } // an instance of FooBar will be passed in
-````
+```
 
 ### Factories
 
@@ -70,12 +70,12 @@ container.registerFactory("foo", function (value) {
 var foo = container.get("foo");
 
 assert(foo.value === "static value");
-````
+```
 
 ### Adaptors
 
-Adaptors work similar to Factories, but are very low level. This is the most basic Interface, 
-an adaptor will have to resolve all dependencies for itself. This is useful if you have to do 
+Adaptors work similar to Factories, but are very low level. This is the most basic Interface,
+an adaptor will have to resolve all dependencies for itself. This is useful if you have to do
 additional work, or a conditional lookup:
 
 ```javascript
@@ -83,7 +83,7 @@ var container = yaioc.container();
 container.register("evenValue", "even value");
 container.register("oddValue", "odd value");
 container.registerAdaptor("foo", function (container) {
-    var value = container.get(Date.now() % 2 ? "oddValue" : "evenValue"); 
+    var value = container.get(Date.now() % 2 ? "oddValue" : "evenValue");
     return { value: value };
 });
 
@@ -91,9 +91,9 @@ container.registerAdaptor("foo", function (container) {
 var foo = container.get("foo");
 
 assert(foo.value === "even value" || foo.value === "odd value");
-````
+```
 
-There is also an object-oriented interface for adaptors. This is handy for extracting a more 
+There is also an object-oriented interface for adaptors. This is handy for extracting a more
 advanced calculation or lookup to a separate class.
 
 ```javascript
@@ -114,7 +114,7 @@ container.registerAdaptor("foo", new FooAdaptor());
 var foo = container.get("foo");
 
 assert(foo instanceof Foo);
-````
+```
 
 Additionally an adaptor will get passed the name of its target component:
 
@@ -126,13 +126,13 @@ container.registerAdaptor("foo", function (container, target) {
 });
 
 var foo = container.get("foo");
-````
+```
 
 ### Caching
 
 If you want to have a single instance of a component, use caching:
 
-````javascript
+```javascript
 container.cache().registerFactory("foo", function factory() {
     return {};
 });
@@ -141,18 +141,18 @@ var fooOne = container.get("foo");
 var fooTwo = container.get("foo");
 
 assert(fooOne === fooTwo);
-````
+```
 
 This works with factories and constructors:
 
-````javascript
+```javascript
 container.cache().register(Foo);
 
 var fooOne = container.get("foo");
 var fooTwo = container.get("foo");
 
 assert(fooOne === fooTwo);
-````
+```
 
 
 ### Component Scan
@@ -169,12 +169,12 @@ container.scanComponents(__dirname + "/**/*Controller.js");
 
 assert(container.get("MyController") === MyController);
 assert(container.get("myController") instanceof MyController);
-````
+```
 
 
 ### Container hierarchies
 
-A container can get access to components registered in wrapped containers, but not vice-versa. 
+A container can get access to components registered in wrapped containers, but not vice-versa.
 If you want to wrap multiple containers, pass in an array of containers
 
 ```javascript
@@ -187,26 +187,28 @@ container.register("bar", bar);
 
 assert(container.get("foo") === foo);
 assert(wrappedContainer.get("bar") === undefined);
-````
+```
 
 ### Dependency Graph
 
-There is a method to give you an overview of all dependencies and transient dependencies of 
-any given component: 
+There is a method to give you an overview of all dependencies and transient dependencies of
+any given component:
 
 ```javascript
 function Foo(baz) {}
 function Bar(foo, value) {}
+function BarDependent(bar) {}
 
 var container = yaioc.container();
 container.register(Foo);
 container.register(Bar);
+container.register(BarDependent);
 container.register("baz", "");
 container.register("value", "static value");
 
 var graph = container.getDependencyGraph("bar");
 console.log(graph.draw());
-````
+```
 
 This will print a tree of dependencies:
 
@@ -217,5 +219,36 @@ bar
 └─ value
 ```
 
-Additionally, there will be an error if either a dependency is not found, or a circular 
+Additionally, there will be an error if either a dependency is not found, or a circular
 reference is detected.
+
+### Dependency Schema
+
+In order to get an overall picture about the regitstered components and their dependecies
+in the container, you can use the method `getDependencySchema`:
+
+```javascript
+function Foo(baz) {}
+function Bar(foo, value) {}
+function BarDependent(bar) {}
+
+var container = yaioc.container();
+container.register(Foo);
+container.register(Bar);
+container.register(BarDependent);
+container.register("baz", "");
+container.register("value", "static value");
+
+var schema = container.getDependencySchema();
+console.log(schema.getDependencyDotFile());
+```
+That outputs content of a [Dot File](https://en.wikipedia.org/wiki/DOT_(graph_description_language)).
+```
+digraph yaiocDeps {
+  foo -> baz;
+  bar -> foo;
+  bar -> value;
+  barDependent -> bar;
+}
+```
+You can use any cli or [online tool](https://bit.ly/38P2WdS) to generate the visual output.

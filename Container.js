@@ -8,6 +8,7 @@ const DependencyResolvingAdapter = require("./DependencyResolvingAdapter");
 const ConstructorAdapter = require("./ConstructorAdapter");
 const Cache = require("./Cache");
 const DependencyGraph = require("./DependencyGraph");
+const DependencySchema = require("./DependencySchema");
 const RegisterMethodsGuard = require("./RegisterMethodsGuard");
 
 
@@ -59,6 +60,12 @@ class Container {
         this.adaptors.set(name, adaptor);
     }
 
+    getRegisteredNames() {
+        const names = [...this.adaptors.keys()];
+
+        return names;
+    }
+
     cache() {
         const InstanceClass = Object.getPrototypeOf(this).constructor;
         const container = new InstanceClass(this);
@@ -77,6 +84,10 @@ class Container {
 
     getDependencyGraph(dependencyName) {
         return new DependencyGraph(this.resolver, dependencyName);
+    }
+
+    getDependencySchema() {
+        return new DependencySchema(this.resolver);
     }
 
     scanComponents(path) {

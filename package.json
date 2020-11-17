@@ -41,5 +41,10 @@
   },
   "dependencies": {
     "glob": "^7.1.2"
-  }
+  },
+  "contributors": [
+    {
+      "name": "Radim Svoboda"
+    }
+  ]
 }
