@@ -1,3 +1,10 @@
+export interface IDependencyGraphPrinter {
+    draw(): string;
+}
+export interface IDependencySchema {
+    getSchema(): [name: string, deps: string[]][];
+    getDependencyDotFile(): string;
+}
 
 export interface IContainer {
 
@@ -19,6 +26,9 @@ export interface IContainer {
     get<TYPE>(name: string, target?: unknown): TYPE;
 
     scanComponents(path: string): void;
+
+    getDependencyGraph(name: string): IDependencyGraphPrinter;
+    getDependencySchema(): IDependencySchema;
 
 }
 
