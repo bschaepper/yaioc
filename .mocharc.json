@@ -1,0 +1,7 @@
+{
+    "exit": true,
+    "recursive": true,
+    "reporter": "spec",
+    "spec": ["test"],
+    "ui": "bdd"
+}
